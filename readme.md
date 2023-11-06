@@ -1,10 +1,5 @@
-<style>
-.banner_image {  
-  background-color: 'white';
-}
-</style>
 
-<a href="https://www.microchip.com"><p align="left"><img src="./assets/MicrochipLogoHorizontalBlackRed.png" width="350" alt=""></a>
+<a href="https://www.microchip.com"><p align="left"><img src="./docs/microchipico.png" width="350" alt=""></a>
 
 # RNWFxx Host Examples
 
