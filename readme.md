@@ -1,5 +1,5 @@
 
-<a href="https://www.microchip.com"><p align="left"><img src="./docs/microchipico.png" width="350" alt=""></a>
+<a href="https://www.microchip.com"><p align="left"><img src="./docs/microchip.png" width="350" alt=""></a>
 
 # RNWFxx Host Examples
 
