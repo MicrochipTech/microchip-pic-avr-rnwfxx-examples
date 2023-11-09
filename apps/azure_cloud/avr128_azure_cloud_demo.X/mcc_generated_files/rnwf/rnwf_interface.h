@@ -69,11 +69,19 @@ extern const uart_drv_interface_t UART2;
 
 // TODO Insert appropriate #include <>
 
+#define MQTT_APP
+
+#ifdef MQTT_APP
 #define RNWF_INTERFACE_LEN_MAX    1024
 
 #define RNWF_IF_ASYCN_MSG_MAX  (512+256)
 #define RNWF_IF_ASYCN_MSG_CNT  2
 #define RNWF_IF_ASYCN_BUF_MAX  RNWF_IF_ASYCN_MSG_MAX*RNWF_IF_ASYCN_MSG_CNT
+#else
+#define RNWF_INTERFACE_LEN_MAX    512
+#define RNWF_IF_ASYCN_BUF_MAX  1024
+#define RNWF_IF_ASYCN_MSG_MAX  64
+#endif
 
 #define RNWF_IF_BUF_MAX     (RNWF_IF_ASYCN_BUF_MAX/RNWF_IF_ASYCN_MSG_MAX)
 

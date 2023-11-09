@@ -90,9 +90,9 @@ typedef enum {
 } APP_LED_STATE_t;
 
 /* Cloud Configuration */
-#define CLIENT_ID               "test-node-rnwf02"
+#define CLIENT_ID         "rnwf02_device_01"
 #define AZURE_SCOPE_ID          "0ne00ABD7D1"
-#define AZURE_PUB_TELEMETRY     "devices/test-node-rnwf02/messages/events/"
+#define AZURE_PUB_TELEMETRY     "devices/rnwf02_device_01/messages/events/"
 
 
 #define AZURE_PUB_PROPERTY      "$iothub/twin/PATCH/properties/reported/?$rid=1"

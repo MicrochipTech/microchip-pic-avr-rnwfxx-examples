@@ -10,7 +10,7 @@
   * @version TCA1 Driver Version 2.1.2
 */
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -149,7 +149,7 @@ void TCA1_Initialize(void) {
     TCA1.SINGLE.INTFLAGS = 0x0;
     
     // Period
-    TCA1.SINGLE.PER = 0x3D08;
+    TCA1.SINGLE.PER = 0x0;
     
     // Temporary data for 16-bit Access
     TCA1.SINGLE.TEMP = 0x0;

@@ -51,7 +51,6 @@ uint8_t g_isMqttConnected = MQTT_DISCONNECTED;
 
 /* Application buffer */
 uint8_t app_buf[APP_BUFFER_SIZE_MAX];
-
 /* MQTT Subscribe Topic Name List */
 static const char *subscribe_list[] = {"mchp/rnwf02/to", NULL, NULL, NULL, NULL};
 

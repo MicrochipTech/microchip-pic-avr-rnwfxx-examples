@@ -7,10 +7,10 @@
  * 
  * @brief This file contains API prototypes and other datatypes for USART3 module.
  *
- * @version USART3 Driver Version 2.0.3
+ * @version USART3 Driver Version 2.1.0
 */
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -59,7 +59,7 @@
 #define UART3_Deinitialize   USART3_Deinitialize
 #define UART3_Write          USART3_Write
 #define UART3_Read           USART3_Read
-#define UART3__IsRxReady     USART3_IsRxReady
+#define UART3_IsRxReady      USART3_IsRxReady
 #define UART3_IsTxReady      USART3_IsTxReady
 #define UART3_IsTxDone       USART3_IsTxDone
 
@@ -67,11 +67,13 @@
 #define UART3_TransmitDisable      USART3_TransmitDisable
 #define UART3_AutoBaudSet          USART3_AutoBaudSet
 #define UART3_AutoBaudQuery        USART3_AutoBaudQuery
+#define UART3_IsAutoBaudDetectError        USART3_IsAutoBaudDetectError
+#define UART3_AutoBaudDetectErrorReset     USART3_AutoBaudDetectErrorReset
 #define UART3_BRGCountSet               (NULL)
 #define UART3_BRGCountGet               (NULL)
 #define UART3_BaudRateSet               (NULL)
 #define UART3_BaudRateGet               (NULL)
-#define UART3__AutoBaudEventEnableGet   (NULL)
+#define UART3_AutoBaudEventEnableGet    (NULL)
 #define UART3_ErrorGet             USART3_ErrorGet
 
 #define UART3_TxCompleteCallbackRegister     (NULL)

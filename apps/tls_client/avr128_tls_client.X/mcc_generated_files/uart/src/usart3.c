@@ -7,11 +7,11 @@
  * 
  * @brief This is the generated driver implementation file for the USART3 driver using 
  *
- * @version USART3 Driver Version 2.0.3
+ * @version USART3 Driver Version 2.1.0
 */
 
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 

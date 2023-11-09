@@ -11,7 +11,7 @@
 */
 
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -30,7 +30,6 @@
     EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY TO MICROCHIP FOR 
     THIS SOFTWARE.
 */
-
 #include "mcc_generated_files/reset/rstctrl.h"
 #include "mcc_generated_files/system/system.h"
 #include "mcc_generated_files/rnwf/rnwf_app.h"
@@ -49,6 +48,7 @@ int main(void)
 {
     SYSTEM_Initialize();
     // Main Section();
+
     RNWF_IF_Init();
     
     PB2_SetInterruptHandler(APP_SW_RESET_Handler);

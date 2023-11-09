@@ -51,7 +51,6 @@ RNWF_NET_SOCKET_t tcp_client_sock_443 = {
         .sock_addr = "52.92.132.8",
         .tls_conf = 1,
         };
-
 const char *tls_cfg_1[] = {"AmazonRootCA1", 0, 0, 0, "s3-us-west-2.amazonaws.com", 0};
 
 uint8_t aws_file_request[] = "GET /ref_doc.pdf HTTP/1.1\r\nHost: file-download-files.s3-us-west-2.amazonaws.com\r\nConnection: close\r\n\r\n";

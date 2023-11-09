@@ -68,12 +68,11 @@ uint8_t app_buf[APP_BUFFER_SIZE_MAX];
 static const char *subscribe_list[] = {"$iothub/twin/PATCH/properties/desired/#", "$iothub/methods/POST/#", "$iothub/twin/res/#", NULL, NULL};
 static uint8_t subCnt;
 /* TLS Configuration details */
-const char *cloud_tls_cfg[] = {"DigiCertGlobalRootG2", "test-node-rnwf02", "test-node-rnwf02", 0, 0, 0};
-
+const char *cloud_tls_cfg[] = {"DigiCertGlobalRootG2", "rnwf02_device_01", "rnwf02_device_01", 0, 0, 0};
 RNWF_MQTT_CFG_t mqtt_cfg = {
     .url = "g2-cert-dps.azure-devices-provisioning.net",
     .clientid = CLIENT_ID,
-    .username = "0ne00ABD7D1/registrations/test-node-rnwf02/api-version=2019-03-31",
+    .username = "0ne00ABD7D1/registrations/rnwf02_device_01/api-version=2019-03-31",
     .password = "",
     .port = 8883,
     .tls_conf = cloud_tls_cfg,
@@ -223,7 +222,7 @@ void APP_AZURE_SUB_Handler(char *p_str)
                 end_ptr = (char *)strstr(reboot_ptr, "S\"}");
                 *end_ptr = '\0';
                 g_RebootDelay = atoi((char *)reboot_ptr+strlen(AZURE_DEALY_TAG));
-                printf("Reboot delay = %d mSec\r\n", g_RebootDelay);
+                printf("Reboot delay = %d Sec\r\n", g_RebootDelay);
                 sprintf(app_buf+pubLen, AZURE_FMT_DELAY_RSP, g_RebootDelay);                
                 APP_MQTT_Publish(app_buf, app_buf+pubLen);
     }
@@ -402,6 +401,7 @@ void RNWF_APP_Initialize(void)
     RNWF_WIFI_SrvCtrl(RNWF_SET_WIFI_PARAMS, &wifi_sta_cfg);
 
     /* RNWF Application Callback register */
+
 
     while(1)
     {  

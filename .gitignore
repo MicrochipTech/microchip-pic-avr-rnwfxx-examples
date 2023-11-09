@@ -79,3 +79,17 @@ dkms.conf
 /wireless_apps_rnwf02/apps/azure_cloud/avr128_azure_cloud_demo.X/dist/
 /wireless_apps_rnwf02/apps/ota_demo/avr128_ota_demo.X/build/
 /wireless_apps_rnwf02/apps/ota_demo/avr128_ota_demo.X/dist/
+/apps/azure_cloud/avr128_azure_cloud_demo.X/build/
+/apps/azure_cloud/avr128_azure_cloud_demo.X/dist/
+/apps/basic_cloud_demo/avr128_basic_cloud_demo.X/build/
+/apps/basic_cloud_demo/avr128_basic_cloud_demo.X/dist/
+/apps/ota_demo/avr128_ota_demo.X/build/
+/apps/ota_demo/avr128_ota_demo.X/dist/
+/apps/tcp_client/avr128_tcp_client.X/build/
+/apps/tcp_client/avr128_tcp_client.X/dist/
+/apps/tcp_server/avr128_tcp_server.X/build/
+/apps/tcp_server/avr128_tcp_server.X/dist/
+/apps/tls_client/avr128_tls_client.X/dist/
+/apps/tls_client/avr128_tls_client.X/build/
+/apps/wifi_easy_config/avr128_wifi_easy_config.X/dist/
+/apps/wifi_easy_config/avr128_wifi_easy_config.X/build/

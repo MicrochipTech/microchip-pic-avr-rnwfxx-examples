@@ -75,6 +75,7 @@ typedef enum {
 /* MQTT Publish Topic Name */
 #define MQTT_PUB_TOPIC     "mchp/rnwf02/from" 
 
+
 #define SUBSCRIBE_QOS_VALUE         RNWF_MQTT_SUBSCRIBE_QOS0
 
 #define CLOUD_SUBACK_HANDLER()        APP_Cloud_SUBACK_Handler()    /* Provide app specific implementation for APP_Cloud_SUBACK_Handler() */
@@ -84,7 +85,5 @@ typedef enum {
 void RNWF_APP_Initialize(void);
 RNWF_RESULT_t RNWF_IF_Init(void);
 RNWF_RESULT_t APP_MQTT_Publish(const char *top, const char *msg);
-void APP_Cloud_Task(void);
-//void APP_Cloud_Telemetry(uint32_t input1, ..., uint32_t inputx);
 
 #endif	/* RNWF_APP_H */

@@ -7,11 +7,11 @@
  * 
  * @brief This is the generated driver implementation file for the USART2 driver using 
  *
- * @version USART2 Driver Version 2.0.3
+ * @version USART2 Driver Version 2.1.0
 */
 
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -41,7 +41,7 @@
   Section: Macro Declarations
 */
 
-#define USART2_RX_BUFFER_SIZE (256) //buffer size should be 2^n
+#define USART2_RX_BUFFER_SIZE (2048) //buffer size should be 2^n
 #define USART2_RX_BUFFER_MASK (USART2_RX_BUFFER_SIZE - 1)
 
 
@@ -80,11 +80,11 @@ const uart_drv_interface_t UART2 = {
 /**
   Section: USART2 variables
 */
-static volatile uint8_t usart2RxHead = 0;
-static volatile uint8_t usart2RxTail = 0;
+static volatile uint16_t usart2RxHead = 0;
+static volatile uint16_t usart2RxTail = 0;
+volatile uint16_t usart2RxCount;
 static volatile uint8_t usart2RxBuffer[USART2_RX_BUFFER_SIZE];
 static volatile usart2_status_t usart2RxStatusBuffer[USART2_RX_BUFFER_SIZE];
-volatile uint8_t usart2RxCount;
 static volatile usart2_status_t usart2RxLastError;
 
 /**
@@ -260,7 +260,7 @@ size_t USART2_ErrorGet(void)
 uint8_t USART2_Read(void)
 {
     uint8_t readValue  = 0;
-    uint8_t tempRxTail;
+    uint16_t tempRxTail;
     
     readValue = usart2RxBuffer[usart2RxTail];
     tempRxTail = (usart2RxTail + 1) & USART2_RX_BUFFER_MASK; // Buffer size of RX should be in the 2^n  
@@ -285,7 +285,7 @@ ISR(USART2_RXC_vect)
 void USART2_ReceiveISR(void)
 {
     uint8_t regValue;
-    uint8_t tempRxHead;
+    uint16_t tempRxHead;
     
     usart2RxStatusBuffer[usart2RxHead].status = 0;
 

@@ -5,12 +5,12 @@
   *
   * @ingroup spi0
   *
-  * @brief Contains the API Implementations for SPI0 module.
+  * @brief This file contains the driver code for the SPI0 module.
   *
-  * @version SPI0 Driver Version 2.0.1
+  * @version SPI0 Driver Version 3.0.0
 */
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -31,177 +31,189 @@
 */
 
 #include "../spi0.h"
+#include "../spi_polling_types.h"
 
-typedef struct spi0_descriptor_s 
-{
-    spi0_transfer_status_t status;
-} spi0_descriptor_t;
-
-/**
-  SPI0_DRIVER_FUNCTION object 
-
-  @brief Defines an object for SPI_DRIVER_FUNCTIONS.
- */
 const struct SPI_INTERFACE SPI0_s = 
 {
     .Initialize = SPI0_Initialize,
-    .Close = SPI0_Close,
+    .Deinitialize = SPI0_Deinitialize,
     .Open = SPI0_Open,
+    .Close = SPI0_Close,
     .BufferExchange = SPI0_BufferExchange,
-    .BufferRead = SPI0_BufferRead,
-    .BufferWrite = SPI0_BufferWrite,	
+    .BufferWrite = SPI0_BufferWrite,
+    .BufferRead = SPI0_BufferRead,	
     .ByteExchange = SPI0_ByteExchange,
-    .ByteRead = SPI0_ByteRead,	
     .ByteWrite = SPI0_ByteWrite,
+    .ByteRead = SPI0_ByteRead,
+    .IsTxReady = SPI0_IsTxReady,
+    .IsRxReady = SPI0_IsRxReady,
+    .RxCompleteCallbackRegister = NULL,
+    .TxCompleteCallbackRegister = NULL
 };
 
-SPI0_configuration_t spi0_configurations[] =
+static const spi_configuration_t spi0_configuration[] =
 {
-    { 0x35, 0x0 }
+    { 0x34, 0xC0 }
 };
 
-static spi0_descriptor_t spi0_desc;
 
 void SPI0_Initialize(void)
 {
-    //BUFEN disabled; BUFWR disabled; MODE 0; SSD disabled; 
-    SPI0.CTRLB = 0x0;
-
-    //CLK2X enabled; DORD disabled; ENABLE enabled; MASTER enabled; PRESC DIV64; 
-    SPI0.CTRLA = 0x35;
-
-    //DREIE disabled; IE disabled; RXCIE disabled; SSIE disabled; TXCIE disabled; 
-    SPI0.INTCTRL = 0x0;
-
-    spi0_desc.status = SPI0_FREE;
-
-    //BUFOVF disabled; DREIF disabled; RXCIF disabled; SSIF disabled; TXCIF disabled; IF disabled; WRCOL disabled; 
-    SPI0.INTFLAGS = 0x0;
+    SPI0.CTRLA = 0x00;
+    SPI0.CTRLB = 0x00;
+    SPI0.INTFLAGS = 0x00;
+    SPI0.INTCTRL = 0x00;
 }
 
-void SPI0_Enable(void)
+void SPI0_Deinitialize(void)
 {
-    SPI0.CTRLA |= SPI_ENABLE_bm;
-}
-
-void SPI0_Disable(void)
-{
-    SPI0.CTRLA &= ~SPI_ENABLE_bm;
+    SPI0.CTRLA = 0x00;
+    SPI0.CTRLB = 0x00;
+    SPI0.INTFLAGS = 0x00;
+    SPI0.INTCTRL = 0x00;
 }
 
 bool SPI0_Open(uint8_t spiConfigIndex)
 {
-    if (spi0_desc.status == SPI0_FREE) {
-        spi0_desc.status = SPI0_IDLE;
-        SPI0.CTRLB                = spi0_configurations[spiConfigIndex].CTRLBvalue;
-        SPI0.CTRLA                = spi0_configurations[spiConfigIndex].CTRLAvalue;
-        return true;
-    } else {
-        return false;
+    bool returnValue = false;
+    if (0 == (SPI0.CTRLA & SPI_ENABLE_bm)) 
+    {
+        //BUFEN enabled; BUFWR enabled; MODE 0; SSD disabled; 
+        SPI0.CTRLB = spi0_configuration[spiConfigIndex].ctrlb;
+        //DREIE disabled; IE disabled; RXCIE disabled; SSIE disabled; TXCIE disabled; 
+        SPI0.INTCTRL = 0x0;
+        //CLK2X enabled; DORD disabled; ENABLE disabled; MASTER enabled; PRESC DIV64; 
+        SPI0.CTRLA = spi0_configuration[spiConfigIndex].ctrla;
+        returnValue = true;
+    } 
+    else 
+    {
+        returnValue = false;
     }
+    return returnValue;
 }
 
 void SPI0_Close(void)
 {
-    spi0_desc.status = SPI0_FREE;
+    SPI0.CTRLA = 0x00;
+    SPI0.CTRLB = 0x00;
+    SPI0.INTFLAGS = 0x00;
+    SPI0.INTCTRL = 0x00;
 }
 
-uint8_t SPI0_ByteExchange(uint8_t data)
+uint8_t SPI0_ByteExchange(uint8_t byteData)
 {
-    SPI0.DATA = data;
-    while (!(SPI0.INTFLAGS & SPI_RXCIF_bm));
-    return SPI0.DATA;
+    uint8_t readData = 0;
+    SPI0.DATA = byteData;
+    while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+    { 
+        ; // Wait until ongoing SPI transfer is completed
+    }
+    readData = SPI0.DATA;
+    return readData;
 }
 
-bool SPI0_Selected(void)
+bool SPI0_IsTxReady(void)
 {
-/**
- * @brief Returns true if SS pin is selected. 
- * TODO: Place your code here
- */
-return true;
+    bool returnValue = false;
+    if(0 != (SPI0.CTRLA & SPI_ENABLE_bm))
+    {
+        if(0 != (SPI0.INTFLAGS & SPI_DREIF_bm))
+        {
+            returnValue = true;
+        }
+        else
+        {
+           returnValue = false; 
+        }
+    }
+    else
+    {
+        returnValue = false;
+    }
+    return returnValue;
 }
 
-void SPI0_WaitDataready(void)
+bool SPI0_IsRxReady(void)
 {
-    while (!(SPI0.INTFLAGS & SPI_RXCIF_bm))
-        ;
+    bool returnValue = false;
+    if(0 != (SPI0.CTRLA & SPI_ENABLE_bm))
+    {
+        if(0 != (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            returnValue = true;
+        }
+        else
+        {
+           returnValue = false; 
+        }
+    }
+    else
+    {
+        returnValue = false;
+    }
+    return returnValue;
 }
 
-void SPI0_BufferExchange(void *block, size_t size)
+void SPI0_BufferExchange(void *bufferData, size_t bufferSize)
 {
-    uint8_t *b = (uint8_t *)block;
-    while (size--) {
-        SPI0.DATA = *b;
-        while (!(SPI0.INTFLAGS & SPI_RXCIF_bm))
-            ;
-        *b = SPI0.DATA;
-        b++;
+    uint8_t *buffer = (uint8_t *)bufferData;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
+    {
+        SPI0.DATA = *buffer;
+        while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            ; // Wait until ongoing SPI transfer is completed
+        }
+        *buffer = SPI0.DATA;
+        buffer++;
+        bufferInputSize--;
     }
 }
 
-void SPI0_BufferWrite(void *block, size_t size)
+void SPI0_BufferWrite(void *bufferData, size_t bufferSize)
 {
-    uint8_t *b = (uint8_t *)block;
-    uint8_t  rdata;
-    while (size--) {
-        SPI0.DATA = *b;
-        while (!(SPI0.INTFLAGS & SPI_RXCIF_bm))
-            ;
-        rdata = SPI0.DATA;
-        (void)(rdata); // Silence compiler warning
-        b++;
+    uint8_t *buffer = (uint8_t *)bufferData;
+    uint8_t  readData = 0;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
+    {
+        SPI0.DATA = *buffer;
+        while(0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            ; // Wait until ongoing SPI transfer is completed
+        }        
+        readData = SPI0.DATA;
+        (void) readData;
+        buffer++;
+        bufferInputSize--;
     }
 }
 
-void SPI0_BufferRead(void *block, size_t size)
+void SPI0_BufferRead(void *bufferData, size_t bufferSize)
 {
-    uint8_t *b = (uint8_t *)block;
-    while (size--) {
+    uint8_t *buffer = (uint8_t *)bufferData;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
+    {
         SPI0.DATA = 0;
-        while (!(SPI0.INTFLAGS & SPI_RXCIF_bm))
-            ;
-        *b = SPI0.DATA;
-        b++;
+        while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+            {
+                ; // Wait until ongoing SPI transfer is completed
+            }
+        *buffer = SPI0.DATA;
+        buffer++;
+        bufferInputSize--;
     }
 }
 
-void SPI0_ByteWrite(uint8_t data)
+void SPI0_ByteWrite(uint8_t byteData)
 {
-    SPI0.DATA = data;
+    SPI0.DATA = byteData;
 }
 
 uint8_t SPI0_ByteRead(void)
 {
     return SPI0.DATA;
-}
-
-uint8_t SPI0_ExchangeByte(uint8_t data)
-{
-    return SPI0_ByteExchange(data);
-}
-
-void SPI0_ExchangeBlock(void *block, size_t blockSize)
-{
-    SPI0_BufferExchange(block, blockSize);
-}
-
-void SPI0_WriteBlock(void *block, size_t blockSize)
-{
-    SPI0_BufferWrite(block, blockSize);
-}
-
-void SPI0_ReadBlock(void *block, size_t blockSize)
-{
-    SPI0_BufferRead(block, blockSize);
-}
-
-void SPI0_WriteByte(uint8_t byte)
-{
-    SPI0_ByteWrite(byte);
-}
-
-uint8_t SPI0_ReadByte(void)
-{
-    return SPI0_ByteRead();
 }

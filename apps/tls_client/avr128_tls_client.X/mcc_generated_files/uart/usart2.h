@@ -7,10 +7,10 @@
  * 
  * @brief This file contains API prototypes and other datatypes for USART2 module.
  *
- * @version USART2 Driver Version 2.0.3
+ * @version USART2 Driver Version 2.1.0
 */
 /*
-© [2023] Microchip Technology Inc. and its subsidiaries.
+? [2023] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -59,7 +59,7 @@
 #define UART2_Deinitialize   USART2_Deinitialize
 #define UART2_Write          USART2_Write
 #define UART2_Read           USART2_Read
-#define UART2__IsRxReady     USART2_IsRxReady
+#define UART2_IsRxReady      USART2_IsRxReady
 #define UART2_IsTxReady      USART2_IsTxReady
 #define UART2_IsTxDone       USART2_IsTxDone
 
@@ -67,11 +67,13 @@
 #define UART2_TransmitDisable      USART2_TransmitDisable
 #define UART2_AutoBaudSet          USART2_AutoBaudSet
 #define UART2_AutoBaudQuery        USART2_AutoBaudQuery
+#define UART2_IsAutoBaudDetectError        USART2_IsAutoBaudDetectError
+#define UART2_AutoBaudDetectErrorReset     USART2_AutoBaudDetectErrorReset
 #define UART2_BRGCountSet               (NULL)
 #define UART2_BRGCountGet               (NULL)
 #define UART2_BaudRateSet               (NULL)
 #define UART2_BaudRateGet               (NULL)
-#define UART2__AutoBaudEventEnableGet   (NULL)
+#define UART2_AutoBaudEventEnableGet    (NULL)
 #define UART2_ErrorGet             USART2_ErrorGet
 
 #define UART2_TxCompleteCallbackRegister     (NULL)

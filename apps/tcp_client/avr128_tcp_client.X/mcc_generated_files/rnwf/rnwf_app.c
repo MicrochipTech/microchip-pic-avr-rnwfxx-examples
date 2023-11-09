@@ -41,14 +41,18 @@
     Main application
 */
 
+
+
 RNWF_NET_SOCKET_t tcp_client_sock_6666 = {
         .bind_type = RNWF_BIND_REMOTE,
         .sock_port = 6666,
         .sock_type = RNWF_SOCK_TCP,
-        .sock_addr = "192.168.0.4",
+        .sock_addr = "192.168.0.195",
         };
 
 uint8_t tcp_client_msg1[] = "Type here and receive its echo!\r\n";
+
+
 
 void APP_SOCKET_Callback(uint32_t socket, RNWF_NET_SOCK_EVENT_t event, uint8_t *p_str)
 {
@@ -111,7 +115,13 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
         case RNWF_DHCP_DONE:
         {
             printf("DHCP IP:%s\n", &p_str[2]); 
+
+
+
             RNWF_NET_SOCK_SrvCtrl(RNWF_NET_SOCK_TCP_OPEN, &tcp_client_sock_6666);
+            
+
+
             break;       
         }
         case RNWF_SCAN_INDICATION:
@@ -132,6 +142,9 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
 
 void RNWF_APP_Initialize(void)
 {    
+
+
+ 
     /* Wi-Fii Connectivity */
     RNWF_WIFI_PARAM_t wifi_sta_cfg = {RNWF_WIFI_MODE_STA, HOME_AP_SSID, HOME_AP_PASSPHRASE, HOME_AP_SECURITY, 1};    
     printf("Connecting to %s\r\n", HOME_AP_SSID);
