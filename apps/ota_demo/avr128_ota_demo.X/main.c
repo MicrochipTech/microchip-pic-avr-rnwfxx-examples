@@ -62,9 +62,9 @@ int main(void)
     SYSTEM_Initialize();
     // Main Section();
     
-    RNWF_IF_Init();
-    
     PB2_SetInterruptHandler(APP_SW_RESET_Handler);
+    
+    RNWF_IF_Init();        
     // Main Section();
 
     printf("%s", "##############################################\n");

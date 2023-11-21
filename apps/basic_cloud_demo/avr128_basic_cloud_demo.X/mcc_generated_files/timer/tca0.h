@@ -7,7 +7,7 @@
  *
  * @brief This file contains the API prototypes for the TCA0 driver in Normal (16-bit) mode.
  *
- * @version TCA0 Driver Version 2.2.0
+ * @version TCA0 Driver Version 2.1.2
 */
 /*
 ? [2023] Microchip Technology Inc. and its subsidiaries.
@@ -244,6 +244,80 @@ void TCA0_WO2OffsetRegCountSet(cmpx_register_value_t count);
  * @return cmpx_register_value_t - 16-bit CMP2 value returns from the CMP0 register of TCA.
  */
 uint16_t TCA0_WO2OffsetRegCountGet(void);
+
+
+
+
+/**
+ * @ingroup tca0_normal
+ * @brief Returns the Count (CNT) register value for the TCA.
+ * @pre Initialize the TCA before calling this API.
+ * @param None.
+ * @return uint16_t - CNT register value for the TCA.
+ *
+ */
+uint16_t TCA0CounterGet(void);
+
+/**
+ * @ingroup tca0_normal
+ * @brief Sets the Count (CNT) register value for the TCA.
+ * @pre Initialize the TCA before calling this API.
+ * @param uint16_t - value to be written to the CNT register.
+ * @return uint16_t - None.
+ *
+ */
+void TCA0CounterSet(uint16_t value);
+
+/**
+ * @ingroup tca0_normal
+ * @brief Sets the Compare 0 (CMP0) register value for the TCA.
+ * @pre Initialize the TCA before calling this API.
+ * @param uint16_t -value to be written to the CMP0 register.
+ * @return None.
+ */
+void TCA0_Compare0Set(uint16_t value);
+
+/**
+ * @ingroup tca0_normal
+ * @brief Sets the Compare 1 (CMP1) register value for the TCA.
+ * @pre Initialize the TCA before calling this API.
+ * @param uint16_t -value to be written to the CMP1 register.
+ * @return None.
+ */
+void TCA0_Compare1Set(uint16_t value);
+
+/**
+ * @ingroup tca0_normal
+ * @brief Sets the Compare 2 (CMP2) register value for the TCA.
+ * @pre Initialize the TCA before calling this API.
+ * @param uint16_t -value to be written to the CMP2 register.
+ * @return None.
+ */
+void TCA0_Compare2Set(uint16_t value);
+
+/**
+ * @ingroup tca0_normal
+ * @brief Sets the Wave mode for the TCA.
+ * @pre Initialize the TCA before calling this API.
+ * @param TCA_SINGLE_WGMODE_t mode:
+ * - @c TCA_SINGLE_WGMODE_NORMAL_gc      @c  -     Normal Mode
+ * - @c TCA_SINGLE_WGMODE_FRQ_gc         @c  -     Frequency Generation Mode
+ * - @c TCA_SINGLE_WGMODE_SINGLESLOPE_gc @c  -     Single Slope PWM
+ * - @c TCA_SINGLE_WGMODE_DSTOP_gc       @c  -     Dual Slope PWM, overflow on TOP
+ * - @c TCA_SINGLE_WGMODE_DSBOTH_gc      @c  -     Dual Slope PWM, overflow on TOP and BOTTOM
+ * - @c TCA_SINGLE_WGMODE_DSBOTTOM_gc    @c  -     Dual Slope PWM, overflow on BOTTOM
+ * @return None.
+ *
+ */
+void TCA0_ModeSet(TCA_SINGLE_WGMODE_t mode);
+
+/**
+ * @ingroup tca0_normal
+ * @brief Performs the tasks to be executed on timer events.
+ * @param None.
+ * @return None.
+ */
+void TCA0_Tasks(void);
 
 #ifdef __cplusplus
 }

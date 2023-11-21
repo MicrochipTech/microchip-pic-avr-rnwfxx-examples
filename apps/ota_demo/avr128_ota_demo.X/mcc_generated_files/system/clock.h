@@ -44,25 +44,25 @@
 
 /**
  * @ingroup clkctrl
- * @brief Initializes the CLKCTRL module.
- * @param None.
- * @return None.
+ * @brief Initialize CLKCTRL module
+ * @param none
+ * @return none
  */
 void CLOCK_Initialize(void);
 
 /**
  * @ingroup clkctrl
- * @brief Enables the Clock Failure Detection on the main clock.
+ * @brief Enable Clock Failure Detection on main clock
  * @param CLKCTRL_CFDSRC_t cfd_source - main clock source for CFD 
- * @return None.
+ * @return none
  */
 void CFD_Enable(CLKCTRL_CFDSRC_t cfd_source);
 
 /**
  * @ingroup clkctrl
- * @brief Disables the Clock Failure Detection on the main clock.
- * @param None. 
- * @return None.
+ * @brief Disable Clock Failure Detection on main clock
+ * @param none 
+ * @return none
  */
 void CFD_Disable();
 

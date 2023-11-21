@@ -52,15 +52,14 @@ int main(void)
     
     SYSTEM_Initialize();
     // Main Section();
+    PB2_SetInterruptHandler(APP_SW_RESET_Handler);
 
     RNWF_IF_Init();
 
     printf("%s", "##################################\n");
     printf("%s", "  Welcome RNWF02 TCP Server Demo  \n");
     printf("%s", "##################################\n");        
-    
-    PB2_SetInterruptHandler(APP_SW_RESET_Handler);
-        
+                
     RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_GET_MAN_ID, man_id); 
 
 	RNWF_APP_Initialize();    // Note: This function call never returns because of an infinite while-loop

@@ -30,9 +30,9 @@
     EXCEED AMOUNT OF FEES, IF ANY, YOU PAID DIRECTLY TO MICROCHIP FOR 
     THIS SOFTWARE.
 */
-#include "mcc_generated_files/reset/rstctrl.h"
 #include "mcc_generated_files/system/system.h"
 #include "mcc_generated_files/rnwf/rnwf_app.h"
+#include "mcc_generated_files/reset/rstctrl.h"
 #include "mcc_generated_files/rnwf/rnwf_system_service.h"
 
 /*
@@ -41,30 +41,26 @@
 
 void APP_SW_RESET_Handler(void)
 {
-    RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_RESET, NULL);
-    
-    DELAY_milliseconds(3500);
-    
-    RSTCTRL_reset();
-    
+    RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_RESET, NULL);    
+    DELAY_milliseconds(3500);    
+    RSTCTRL_reset();    
 }
 
 int main(void)
 {
     
     uint8_t man_id[32];
-    uint16_t cert_list[1024];
+    uint16_t cert_list[512];
     
     SYSTEM_Initialize();
-    // Main Section();    
+    // Main Section();  
+    PB2_SetInterruptHandler(APP_SW_RESET_Handler);
 
     RNWF_IF_Init();
     
     printf("%s", "##################################\n");
     printf("%s", "  Welcome RNWF02 TLS Client Demo  \n");
-    printf("%s", "##################################\n");    
-    
-    PB2_SetInterruptHandler(APP_SW_RESET_Handler);
+    printf("%s", "##################################\n");            
     
     RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_GET_MAN_ID, man_id);    
     printf("Manufacturer = %s\n", man_id);

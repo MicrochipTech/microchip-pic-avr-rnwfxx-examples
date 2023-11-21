@@ -61,6 +61,8 @@ int main(void)
     uint32_t pub_cnt = 0;
     
     SYSTEM_Initialize();
+    PB2_SetInterruptHandler(APP_SW_RESET_Handler);
+    
     // Main Section();
     RNWF_IF_Init();
     
@@ -68,10 +70,7 @@ int main(void)
     printf("%s", "  Welcome RNWF02 Basic Cloud Demo  \n");
     printf("%s", "##################################\n");
     
-    
-    TCA0_OverflowCallbackRegister(APP_TIMER_Callback);
-    
-    PB2_SetInterruptHandler(APP_SW_RESET_Handler);
+    TCA0_OverflowCallbackRegister(APP_TIMER_Callback);        
     
     RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_GET_CERT_LIST, certs_keys);    
     printf("%s\n", certs_keys);

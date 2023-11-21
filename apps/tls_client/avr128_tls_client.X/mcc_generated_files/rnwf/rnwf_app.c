@@ -55,7 +55,7 @@ const char *tls_cfg_1[] = {"AmazonRootCA1", 0, 0, 0, "s3-us-west-2.amazonaws.com
 
 uint8_t aws_file_request[] = "GET /ref_doc.pdf HTTP/1.1\r\nHost: file-download-files.s3-us-west-2.amazonaws.com\r\nConnection: close\r\n\r\n";
 
-#define TCP_BUF_LEN_MAX     4096 + 2048
+#define TCP_BUF_LEN_MAX     1024
 #define HTTP_CONTENT_LEN    "Content-Length:"
 uint8_t tcp_data[TCP_BUF_LEN_MAX];
 uint32_t gFile_Len = 0;
@@ -135,6 +135,13 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
 {
     switch(event)
     {
+        case RNWF_SNTP_UP:
+        {
+            RNWF_NET_SOCK_SrvCtrl(RNWF_NET_TLS_CONFIG_1, tls_cfg_1);
+            tcp_client_sock_443.tls_conf = RNWF_NET_TLS_CONFIG_1;
+            RNWF_NET_SOCK_SrvCtrl(RNWF_NET_SOCK_TCP_OPEN, &tcp_client_sock_443);
+            break;
+        }
         case RNWF_CONNECTED:
         {
             printf("Wi-Fi Connected\n");
@@ -148,11 +155,7 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
         }
         case RNWF_DHCP_DONE:
         {
-            printf("DHCP IP:%s\n", &p_str[2]); 
-            RNWF_NET_SOCK_SrvCtrl(RNWF_NET_TLS_CONFIG_1, tls_cfg_1);
-            tcp_client_sock_443.tls_conf = RNWF_NET_TLS_CONFIG_1;
-            RNWF_NET_SOCK_SrvCtrl(RNWF_NET_SOCK_TCP_OPEN, &tcp_client_sock_443);
-            
+            printf("DHCP IP:%s\n", &p_str[2]);                         
             break;       
         }
         case RNWF_SCAN_INDICATION:

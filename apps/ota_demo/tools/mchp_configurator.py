@@ -4,7 +4,7 @@ import socket
 
 DEFAULT_OTA_SERVER = "192.168.205.75"
 DEFAULT_OTA_PORT   = "8000"
-DEFAULT_OTA_IMAGE  = "fw1_june15.bin"
+DEFAULT_OTA_IMAGE  = "fw1_june7.bin"
 
 def is_ipv4_ip(address):
     if(address != '127.0.0.1'):

@@ -1,13 +1,20 @@
 /**
- * SPI Driver API Interface File
- *
- * @file spi_interface.h
- *
- * @defgroup spi SPI
- *
- * @brief This header file provides API prototypes for the SPI module in Polling and Interrupt mode.
- *
- * @version SPI Interface Version v3.0.0
+  SPI Generated Driver API interface File
+
+  @Company
+    Microchip Technology Inc.
+
+  @File Name
+    spi_interface.h
+
+  @Summary
+    This is the generated driver interface file for the SPI driver.
+
+  @Description
+    This interface file provides APIs for driver for SPI.
+    The generated drivers are tested against the following:
+        Compiler          :  XC8 v2.20
+        MPLAB             :  MPLABX v5.40
 */
 
 /*
@@ -34,31 +41,46 @@
 #ifndef SPI_INTERFACE_H
 #define SPI_INTERFACE_H
 
+/**
+ Section: Included Files
+*/
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+
+#ifdef __cplusplus
+
+    extern "C" {
+
+#endif
+
+/**
+ Section: Data Type Definitions
+*/
         
 /**
- * @ingroup spi
- * @struct SPI_INTERFACE SPI
- * @brief SPI Driver prototypes struct.
- */ 
+  SPI Driver function structure.
+
+  @Summary
+    Structure containing the function pointers of SPI driver.
+ */
 struct SPI_INTERFACE
 {   
     void (*Initialize)(void);
-    void (*Deinitialize)(void);
-    bool (*Open)(uint8_t spiConfigIndex);
     void (*Close)(void);
+    bool (*Open)(uint8_t spiConfigIndex);
     void (*BufferExchange)(void *bufferData, size_t bufferSize);
     void (*BufferRead)(void *bufferData, size_t bufferSize);
     void (*BufferWrite)(void *bufferData, size_t bufferSize); 
     uint8_t (*ByteExchange)(uint8_t byteData);    
     uint8_t (*ByteRead)(void);
     void (*ByteWrite)(uint8_t byteData);
-    bool (*IsRxReady)(void);
-    bool (*IsTxReady)(void);
-    void (*RxCompleteCallbackRegister)(void (*callbackHandler)(void));
-    void (*TxCompleteCallbackRegister)(void (*callbackHandler)(void));
 };
 
-#endif /* SPI_INTERFACE_H */
+#ifdef __cplusplus
+
+    }
+
+#endif
+
+#endif //SPI_INTERFACE_H

@@ -7,7 +7,7 @@
  * 
  * @brief This file contains the generated header file for the Configuration bits driver.
  *
- * @version Driver Version 1.0.5
+ * @version Driver Version 1.0.4
 */
     
 /*

@@ -7,7 +7,7 @@
   *
   * @brief This file contains the API implementations for TCA0 module driver in Normal (16-bit) mode.
   *
-  * @version TCA0 Driver Version 2.2.0
+  * @version TCA0 Driver Version 2.1.2
 */
 /*
 ? [2023] Microchip Technology Inc. and its subsidiaries.
@@ -41,13 +41,15 @@ const struct TMR_INTERFACE TCA0_Interface = {
     .TimeoutCallbackRegister = TCA0_OverflowCallbackRegister,
     .Tasks = NULL
 };
-
 void TCA0_DefaultCompare0CallbackRegister(void);
 void (*TCA0_CMP0_isr_cb)(void) = &TCA0_DefaultCompare0CallbackRegister;
+
 void TCA0_DefaultCompare1CallbackRegister(void);
 void (*TCA0_CMP1_isr_cb)(void) = &TCA0_DefaultCompare1CallbackRegister;
+
 void TCA0_DefaultCompare2CallbackRegister(void);
 void (*TCA0_CMP2_isr_cb)(void) = &TCA0_DefaultCompare2CallbackRegister;
+
 void TCA0_DefaultOverflowCallbackRegister(void);
 void (*TCA0_OVF_isr_cb)(void) = &TCA0_DefaultOverflowCallbackRegister;
 
@@ -91,29 +93,6 @@ void TCA0_Compare2CallbackRegister(TCA0_cb_t cb)
     TCA0_CMP2_isr_cb = cb;
 }
 
-ISR(TCA0_CMP0_vect)
-{
-    if (TCA0_CMP0_isr_cb != NULL)
-        (*TCA0_CMP0_isr_cb)();
-    
-    TCA0.SINGLE.INTFLAGS = TCA_SINGLE_CMP0_bm;
-}
-
-ISR(TCA0_CMP1_vect)
-{
-    if (TCA0_CMP1_isr_cb != NULL)
-        (*TCA0_CMP1_isr_cb)();
-    
-    TCA0.SINGLE.INTFLAGS = TCA_SINGLE_CMP1_bm;
-}
-
-ISR(TCA0_CMP2_vect)
-{
-    if (TCA0_CMP2_isr_cb != NULL)
-        (*TCA0_CMP2_isr_cb)();
-    
-    TCA0.SINGLE.INTFLAGS = TCA_SINGLE_CMP2_bm;
-}
 
 ISR(TCA0_OVF_vect)
 {
@@ -122,7 +101,6 @@ ISR(TCA0_OVF_vect)
     
     TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm;
 }
-
 
 void TCA0_Initialize(void) {
     // Compare 0
@@ -293,3 +271,53 @@ uint16_t TCA0_WO2OffsetRegCountGet(void)
     //Returns CMP2 register value
     return TCA0.SINGLE.CMP2;;
 }
+
+
+
+void TCA0CounterSet(uint16_t value)
+{
+    //Write value to CNT register
+    TCA0.SINGLE.CNT=value;
+}
+
+uint16_t TCA0CounterGet(void)
+{
+    //Returns CNT register value
+    return TCA0.SINGLE.CNT;
+}
+
+void TCA0_Compare0Set(uint16_t value)
+{
+    //Write value to CMP0 register
+    TCA0.SINGLE.CMP0=value;
+}
+
+void TCA0_Compare1Set(uint16_t value)
+{
+    //Write value to CMP1 register
+    TCA0.SINGLE.CMP1=value;
+}
+
+void TCA0_Compare2Set(uint16_t value)
+{
+    //Write value to CMP2 register
+    TCA0.SINGLE.CMP2=value;
+}
+
+void TCA0_ModeSet(TCA_SINGLE_WGMODE_t mode)
+{
+  uint8_t temp;
+  if((mode == TCA_SINGLE_WGMODE_NORMAL_gc) ||
+     (mode == TCA_SINGLE_WGMODE_FRQ_gc) ||
+     (mode == TCA_SINGLE_WGMODE_SINGLESLOPE_gc) ||
+     (mode == TCA_SINGLE_WGMODE_DSTOP_gc) ||
+     (mode == TCA_SINGLE_WGMODE_DSBOTH_gc) ||
+     (mode == TCA_SINGLE_WGMODE_DSBOTTOM_gc))
+  {
+      temp = (TCA0.SINGLE.CTRLB & ~TCA_SINGLE_WGMODE_gm) |
+             (  mode     &  TCA_SINGLE_WGMODE_gm);
+      TCA0.SINGLE.CTRLB = temp;
+  }
+}
+
+

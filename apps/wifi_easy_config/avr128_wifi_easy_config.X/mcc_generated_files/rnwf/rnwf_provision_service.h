@@ -41,7 +41,7 @@
 #define DBG_MSG_PROV(args, ...)    printf("[PROV]:"args, ##__VA_ARGS__)
 
 /* Wi-Fi Configuration */
-#define PROV_AP_SSID        "test-ProvMode"
+#define PROV_AP_SSID        "RNWF-ProvAP"
 #define PROV_AP_PASSPHRASE  "password"
 #define PROV_AP_SECURITY     RNWF_WPA2_MIXED
 

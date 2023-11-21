@@ -388,6 +388,7 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
     }
 }
 
+
 void RNWF_APP_Initialize(void)
 {    
     const char sntp_url[] =  "0.in.pool.ntp.org";    
