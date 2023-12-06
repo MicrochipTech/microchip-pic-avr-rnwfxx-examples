@@ -149,7 +149,7 @@ void TCA1_Initialize(void) {
     TCA1.SINGLE.INTFLAGS = 0x0;
     
     // Period
-    TCA1.SINGLE.PER = 0x0;
+    TCA1.SINGLE.PER = 0x3D08;
     
     // Temporary data for 16-bit Access
     TCA1.SINGLE.TEMP = 0x0;
