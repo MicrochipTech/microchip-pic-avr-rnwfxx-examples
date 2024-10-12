@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * MQTT Service source file
  * 
  * @file rnwf_mqtt_service.c
  * 
- * @defgroup 
- *
- * @ingroup
+ * @ingroup mqtt_service
  * 
- * @brief 
+ * @brief This file contains APIs and data types for MQTT service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* This section lists the other files that are included in this file.
@@ -90,7 +82,7 @@ RNWF_RESULT_t result = RNWF_FAIL;
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_MQTT_SET_PROTO_VER, 3);
             if(mqtt_cfg->tls_idx != 0)
             {
-                result = RNWF_NET_SOCK_SrvCtrl(mqtt_cfg->tls_idx, mqtt_cfg->tls_conf);
+                    result = RNWF_NET_SOCK_SrvCtrl(mqtt_cfg->tls_idx, mqtt_cfg->tls_conf);
                 result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_MQTT_SET_TLS_CONF, mqtt_cfg->tls_idx);                             
             }
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_MQTT_SET_BROKER_URL, mqtt_cfg->url);

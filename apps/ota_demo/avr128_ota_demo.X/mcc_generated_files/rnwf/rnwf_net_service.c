@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * NET Service source file
  * 
  * @file rnwf_net_service.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup net_service
  * 
- * @brief 
+ * @brief This file contains APIs and data types for Net service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* This section lists the other files that are included in this file.
@@ -103,7 +95,10 @@ RNWF_RESULT_t RNWF_NET_SOCK_SrvCtrl( RNWF_NET_SOCK_SERVICE_t request, void *inpu
         {
             RNWF_NET_SOCKET_t *socket = (RNWF_NET_SOCKET_t*)(input); 
             uint8_t socket_id[32];
-            if(RNWF_CMD_SEND_OK_WAIT(RNWF_SOCK_OPEN_RESP, (uint8_t *)socket_id, RNWF_SOCK_OPEN_TCP) == RNWF_PASS)
+        /* feature addition from FW v2.0.0 */
+            if(RNWF_CMD_SEND_OK_WAIT(RNWF_SOCK_OPEN_RESP, (uint8_t *)socket_id, RNWF_SOCK_OPEN_TCP, socket->sockIP) == RNWF_PASS)
+         
+ 
             {
                 sscanf((char *)socket_id, "%lu", &socket->sock_master);
                 switch(socket->bind_type)
@@ -130,7 +125,10 @@ RNWF_RESULT_t RNWF_NET_SOCK_SrvCtrl( RNWF_NET_SOCK_SERVICE_t request, void *inpu
         {
             RNWF_NET_SOCKET_t *socket = (RNWF_NET_SOCKET_t*)(input);
             int8_t socket_id[32];
-            if(RNWF_CMD_SEND_OK_WAIT(RNWF_SOCK_OPEN_RESP, (uint8_t *)socket_id, RNWF_SOCK_OPEN_UDP) == RNWF_PASS)
+        /* feature addition from FW v2.0.0 */
+            if(RNWF_CMD_SEND_OK_WAIT(RNWF_SOCK_OPEN_RESP, (uint8_t *)socket_id, RNWF_SOCK_OPEN_UDP, socket->sockIP) == RNWF_PASS)
+         
+     
             {
                 sscanf((char *)socket_id, "%lu", &socket->sock_master);
                 switch(socket->bind_type)
@@ -149,8 +147,7 @@ RNWF_RESULT_t RNWF_NET_SOCK_SrvCtrl( RNWF_NET_SOCK_SERVICE_t request, void *inpu
                 }               
             }             
             break;
-        }
-            
+        }  
         case RNWF_NET_SOCK_CLOSE:
         {
             uint32_t socket = *((uint32_t *)input);
@@ -181,9 +178,16 @@ RNWF_RESULT_t RNWF_NET_SOCK_SrvCtrl( RNWF_NET_SOCK_SERVICE_t request, void *inpu
                 result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SOCK_TLS_SERVER_NAME, request, tls_cfg_list[RNWF_NET_TLS_SERVER_NAME]);
             if(tls_cfg_list[RNWF_NET_TLS_DOMAIN_NAME] != NULL)
                 result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SOCK_TLS_DOMAIN_NAME, request, tls_cfg_list[RNWF_NET_TLS_DOMAIN_NAME]);
-            
+        /* feature additions from FW v2.0.0*/
+            if(tls_cfg_list[RNWF_NET_TLS_PEER_AUTH] != NULL)
+                result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SOCK_TLS_PEER_AUTH, request, tls_cfg_list[RNWF_NET_TLS_PEER_AUTH]);
+            if(tls_cfg_list[RNWF_NET_TLS_PEER_DOMVER] != NULL)
+                result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SOCK_TLS_PEER_DOMVER, request, tls_cfg_list[RNWF_NET_TLS_PEER_DOMVER]);
+         
+
             break;
         }
+
         case RNWF_NET_SOCK_SET_CALLBACK:
             gSocket_CallBack_Handler[1] = (RNWF_NET_SOCK_CALLBACK_t)(input);                        
             break;
@@ -220,9 +224,16 @@ RNWF_RESULT_t RNWF_NET_UDP_SOCK_Write( uint32_t socket, uint8_t *addr, uint32_t 
     
     return result;
 }
-
-   
-
+ 
+/**
+ * @ingroup     net_service
+ * @brief       NET Socket Read API to send RAW read command to RNWF device
+ * @param[in]   socket        Socket ID 
+ * @param[in]   length        Length of data to be read 
+ * @param[in]   buffer        Input buffer to read the data     
+ * @retval      RNWF_PASS Requested service is handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 int16_t RNWF_NET_SOCK_Read( uint32_t socket, uint16_t length, uint8_t *buffer)  {                
     int16_t result = RNWF_FAIL;
                                         

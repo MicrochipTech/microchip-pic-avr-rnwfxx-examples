@@ -12,49 +12,55 @@
         </logicalFolder>
         <logicalFolder name="rnwf" displayName="rnwf" projectFiles="true">
           <itemPath>mcc_generated_files/rnwf/rnwf_ota_service.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_interface.h</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_net_service.h</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_system_service.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_interface.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.h</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_app.h</itemPath>
         </logicalFolder>
         <logicalFolder name="spi" displayName="spi" projectFiles="true">
-          <itemPath>mcc_generated_files/spi/spi0.h</itemPath>
           <itemPath>mcc_generated_files/spi/spi_interface.h</itemPath>
+          <itemPath>mcc_generated_files/spi/spi0.h</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <logicalFolder name="utils" displayName="utils" projectFiles="true">
             <logicalFolder name="assembler" displayName="assembler" projectFiles="true">
-              <itemPath>mcc_generated_files/system/utils/assembler/gas.h</itemPath>
               <itemPath>mcc_generated_files/system/utils/assembler/iar.h</itemPath>
+              <itemPath>mcc_generated_files/system/utils/assembler/gas.h</itemPath>
             </logicalFolder>
-            <itemPath>mcc_generated_files/system/utils/utils_assert.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/compiler.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/utils.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/assembler.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/atomic.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/interrupt_avr8.h</itemPath>
-            <itemPath>mcc_generated_files/system/utils/compiler.h</itemPath>
-            <itemPath>mcc_generated_files/system/utils/utils.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/utils_assert.h</itemPath>
           </logicalFolder>
-          <itemPath>mcc_generated_files/system/port.h</itemPath>
-          <itemPath>mcc_generated_files/system/interrupt.h</itemPath>
           <itemPath>mcc_generated_files/system/clock.h</itemPath>
           <itemPath>mcc_generated_files/system/system.h</itemPath>
-          <itemPath>mcc_generated_files/system/ccp.h</itemPath>
+          <itemPath>mcc_generated_files/system/pins.h</itemPath>
           <itemPath>mcc_generated_files/system/protected_io.h</itemPath>
           <itemPath>mcc_generated_files/system/config_bits.h</itemPath>
-          <itemPath>mcc_generated_files/system/pins.h</itemPath>
+          <itemPath>mcc_generated_files/system/interrupt.h</itemPath>
+          <itemPath>mcc_generated_files/system/port.h</itemPath>
+          <itemPath>mcc_generated_files/system/ccp.h</itemPath>
         </logicalFolder>
         <logicalFolder name="timer" displayName="timer" projectFiles="true">
           <itemPath>mcc_generated_files/timer/delay.h</itemPath>
         </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
-          <itemPath>mcc_generated_files/uart/usart3.h</itemPath>
-          <itemPath>mcc_generated_files/uart/usart2.h</itemPath>
           <itemPath>mcc_generated_files/uart/uart_drv_interface.h</itemPath>
+          <itemPath>mcc_generated_files/uart/usart2.h</itemPath>
+          <itemPath>mcc_generated_files/uart/usart3.h</itemPath>
           <itemPath>mcc_generated_files/uart/uart_types.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <itemPath>sst2x_driver.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="true">
+      <itemPath>Makefile</itemPath>
+      <itemPath>avr128_ota_demo.mc3</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -67,12 +73,12 @@
                      displayName="MCC Generated Files"
                      projectFiles="true">
         <logicalFolder name="rnwf" displayName="rnwf" projectFiles="true">
-          <itemPath>mcc_generated_files/rnwf/rnwf_ota_service.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.c</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_system_service.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_app.c</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_interface.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_app.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_ota_service.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.c</itemPath>
         </logicalFolder>
         <logicalFolder name="spi" displayName="spi" projectFiles="true">
           <logicalFolder name="src" displayName="src" projectFiles="true">
@@ -81,12 +87,12 @@
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <logicalFolder name="src" displayName="src" projectFiles="true">
-            <itemPath>mcc_generated_files/system/src/clock.c</itemPath>
-            <itemPath>mcc_generated_files/system/src/pins.c</itemPath>
-            <itemPath>mcc_generated_files/system/src/protected_io.S</itemPath>
             <itemPath>mcc_generated_files/system/src/interrupt.c</itemPath>
-            <itemPath>mcc_generated_files/system/src/config_bits.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/pins.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/clock.c</itemPath>
             <itemPath>mcc_generated_files/system/src/system.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/config_bits.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/protected_io.S</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="timer" displayName="timer" projectFiles="true">
@@ -104,12 +110,6 @@
       <itemPath>main.c</itemPath>
       <itemPath>sst2x_driver.c</itemPath>
     </logicalFolder>
-    <logicalFolder name="ExternalFiles"
-                   displayName="Important Files"
-                   projectFiles="false">
-      <itemPath>Makefile</itemPath>
-      <itemPath>avr128_ota_demo.mc3</itemPath>
-    </logicalFolder>
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>
@@ -122,13 +122,13 @@
         <targetDevice>AVR128DB48</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>nEdbgTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>2.45</languageToolchainVersion>
-        <platform>4</platform>
+        <languageToolchainVersion>2.50</languageToolchainVersion>
+        <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="AVR-Dx_DFP" vendor="Microchip" version="2.3.272"/>
+        <pack name="AVR-Dx_DFP" vendor="Microchip" version="2.6.303"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -193,6 +193,7 @@
       </HI-TECH-COMP>
       <HI-TECH-LINK>
         <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-checksumAVR" value=""/>
         <property key="additional-options-code-offset" value=""/>
         <property key="additional-options-command-line" value=""/>
         <property key="additional-options-errata" value=""/>
@@ -237,53 +238,6 @@
         <property key="program-the-device-with-default-config-words" value="false"/>
         <property key="remove-unused-sections" value="true"/>
       </HI-TECH-LINK>
-      <Tool>
-        <property key="AutoSelectMemRanges" value="auto"/>
-        <property key="communication.activationmode" value="nohv"/>
-        <property key="communication.interface" value="updi"/>
-        <property key="communication.speed" value="0.500"/>
-        <property key="debugoptions.debug-startup" value="Use system settings"/>
-        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
-        <property key="event.recorder.enabled" value="false"/>
-        <property key="event.recorder.scvd.files" value=""/>
-        <property key="firmware.path"
-                  value="Press to browse for a specific firmware version"/>
-        <property key="firmware.toolpack"
-                  value="Press to select which tool pack to use"/>
-        <property key="firmware.update.action" value="firmware.update.use.latest"/>
-        <property key="freeze.timers" value="false"/>
-        <property key="lastid" value=""/>
-        <property key="memories.aux" value="false"/>
-        <property key="memories.bootflash" value="true"/>
-        <property key="memories.configurationmemory" value="true"/>
-        <property key="memories.configurationmemory2" value="true"/>
-        <property key="memories.dataflash" value="true"/>
-        <property key="memories.eeprom" value="true"/>
-        <property key="memories.exclude.configurationmemory" value="true"/>
-        <property key="memories.flashdata" value="true"/>
-        <property key="memories.id" value="true"/>
-        <property key="memories.instruction.ram.ranges"
-                  value="${memories.instruction.ram.ranges}"/>
-        <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.ranges" value="0-ffff"/>
-        <property key="poweroptions.powerenable" value="false"/>
-        <property key="programoptions.eraseb4program" value="true"/>
-        <property key="programoptions.preservedataflash" value="false"/>
-        <property key="programoptions.preservedataflash.ranges"
-                  value="${memories.dataflash.default}"/>
-        <property key="programoptions.preserveeeprom" value="false"/>
-        <property key="programoptions.preserveeeprom.ranges" value="1400-15ff"/>
-        <property key="programoptions.preserveprogram.ranges" value=""/>
-        <property key="programoptions.preserveprogramrange" value="false"/>
-        <property key="programoptions.preserveuserid" value="false"/>
-        <property key="programoptions.programuserotp" value="false"/>
-        <property key="toolpack.updateoptions"
-                  value="toolpack.updateoptions.uselatestoolpack"/>
-        <property key="toolpack.updateoptions.packversion"
-                  value="Press to select which tool pack to use"/>
-        <property key="voltagevalue" value=""/>
-      </Tool>
       <XC8-CO>
         <property key="coverage-enable" value=""/>
         <property key="stack-guidance" value="false"/>
@@ -306,53 +260,6 @@
         <property key="user-pack-device-support" value=""/>
         <property key="wpo-lto" value="false"/>
       </XC8-config-global>
-      <nEdbgTool>
-        <property key="AutoSelectMemRanges" value="auto"/>
-        <property key="communication.activationmode" value="nohv"/>
-        <property key="communication.interface" value="updi"/>
-        <property key="communication.speed" value="0.500"/>
-        <property key="debugoptions.debug-startup" value="Use system settings"/>
-        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
-        <property key="event.recorder.enabled" value="false"/>
-        <property key="event.recorder.scvd.files" value=""/>
-        <property key="firmware.path"
-                  value="Press to browse for a specific firmware version"/>
-        <property key="firmware.toolpack"
-                  value="Press to select which tool pack to use"/>
-        <property key="firmware.update.action" value="firmware.update.use.latest"/>
-        <property key="freeze.timers" value="false"/>
-        <property key="lastid" value=""/>
-        <property key="memories.aux" value="false"/>
-        <property key="memories.bootflash" value="true"/>
-        <property key="memories.configurationmemory" value="true"/>
-        <property key="memories.configurationmemory2" value="true"/>
-        <property key="memories.dataflash" value="true"/>
-        <property key="memories.eeprom" value="true"/>
-        <property key="memories.exclude.configurationmemory" value="true"/>
-        <property key="memories.flashdata" value="true"/>
-        <property key="memories.id" value="true"/>
-        <property key="memories.instruction.ram.ranges"
-                  value="${memories.instruction.ram.ranges}"/>
-        <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.ranges" value="0-ffff"/>
-        <property key="poweroptions.powerenable" value="false"/>
-        <property key="programoptions.eraseb4program" value="true"/>
-        <property key="programoptions.preservedataflash" value="false"/>
-        <property key="programoptions.preservedataflash.ranges"
-                  value="${memories.dataflash.default}"/>
-        <property key="programoptions.preserveeeprom" value="false"/>
-        <property key="programoptions.preserveeeprom.ranges" value="1400-15ff"/>
-        <property key="programoptions.preserveprogram.ranges" value=""/>
-        <property key="programoptions.preserveprogramrange" value="false"/>
-        <property key="programoptions.preserveuserid" value="false"/>
-        <property key="programoptions.programuserotp" value="false"/>
-        <property key="toolpack.updateoptions"
-                  value="toolpack.updateoptions.uselatestoolpack"/>
-        <property key="toolpack.updateoptions.packversion"
-                  value="Press to select which tool pack to use"/>
-        <property key="voltagevalue" value=""/>
-      </nEdbgTool>
     </conf>
   </confs>
 </configurationDescriptor>

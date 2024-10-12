@@ -11,44 +11,50 @@
           <itemPath>mcc_generated_files/reset/rstctrl.h</itemPath>
         </logicalFolder>
         <logicalFolder name="rnwf" displayName="rnwf" projectFiles="true">
-          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_interface.h</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_system_service.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.h</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_app.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_interface.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.h</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <logicalFolder name="utils" displayName="utils" projectFiles="true">
             <logicalFolder name="assembler" displayName="assembler" projectFiles="true">
-              <itemPath>mcc_generated_files/system/utils/assembler/gas.h</itemPath>
               <itemPath>mcc_generated_files/system/utils/assembler/iar.h</itemPath>
+              <itemPath>mcc_generated_files/system/utils/assembler/gas.h</itemPath>
             </logicalFolder>
-            <itemPath>mcc_generated_files/system/utils/compiler.h</itemPath>
-            <itemPath>mcc_generated_files/system/utils/utils.h</itemPath>
-            <itemPath>mcc_generated_files/system/utils/atomic.h</itemPath>
-            <itemPath>mcc_generated_files/system/utils/interrupt_avr8.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/utils_assert.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/assembler.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/compiler.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/utils.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/interrupt_avr8.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/atomic.h</itemPath>
           </logicalFolder>
+          <itemPath>mcc_generated_files/system/clock.h</itemPath>
+          <itemPath>mcc_generated_files/system/protected_io.h</itemPath>
           <itemPath>mcc_generated_files/system/ccp.h</itemPath>
           <itemPath>mcc_generated_files/system/port.h</itemPath>
-          <itemPath>mcc_generated_files/system/protected_io.h</itemPath>
           <itemPath>mcc_generated_files/system/system.h</itemPath>
-          <itemPath>mcc_generated_files/system/clock.h</itemPath>
-          <itemPath>mcc_generated_files/system/config_bits.h</itemPath>
-          <itemPath>mcc_generated_files/system/pins.h</itemPath>
           <itemPath>mcc_generated_files/system/interrupt.h</itemPath>
+          <itemPath>mcc_generated_files/system/pins.h</itemPath>
+          <itemPath>mcc_generated_files/system/config_bits.h</itemPath>
         </logicalFolder>
         <logicalFolder name="timer" displayName="timer" projectFiles="true">
           <itemPath>mcc_generated_files/timer/delay.h</itemPath>
         </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
+          <itemPath>mcc_generated_files/uart/uart_types.h</itemPath>
           <itemPath>mcc_generated_files/uart/uart_drv_interface.h</itemPath>
           <itemPath>mcc_generated_files/uart/usart2.h</itemPath>
           <itemPath>mcc_generated_files/uart/usart3.h</itemPath>
-          <itemPath>mcc_generated_files/uart/uart_types.h</itemPath>
         </logicalFolder>
       </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="true">
+      <itemPath>Makefile</itemPath>
+      <itemPath>avr128_tcp_client.mc3</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -61,20 +67,20 @@
                      displayName="MCC Generated Files"
                      projectFiles="true">
         <logicalFolder name="rnwf" displayName="rnwf" projectFiles="true">
-          <itemPath>mcc_generated_files/rnwf/rnwf_interface.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_app.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_system_service.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.c</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_system_service.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_app.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_interface.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.c</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <logicalFolder name="src" displayName="src" projectFiles="true">
             <itemPath>mcc_generated_files/system/src/config_bits.c</itemPath>
-            <itemPath>mcc_generated_files/system/src/protected_io.S</itemPath>
             <itemPath>mcc_generated_files/system/src/clock.c</itemPath>
-            <itemPath>mcc_generated_files/system/src/interrupt.c</itemPath>
-            <itemPath>mcc_generated_files/system/src/pins.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/protected_io.S</itemPath>
             <itemPath>mcc_generated_files/system/src/system.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/pins.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/interrupt.c</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="timer" displayName="timer" projectFiles="true">
@@ -84,18 +90,12 @@
         </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <logicalFolder name="src" displayName="src" projectFiles="true">
-            <itemPath>mcc_generated_files/uart/src/usart3.c</itemPath>
             <itemPath>mcc_generated_files/uart/src/usart2.c</itemPath>
+            <itemPath>mcc_generated_files/uart/src/usart3.c</itemPath>
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
       <itemPath>main.c</itemPath>
-    </logicalFolder>
-    <logicalFolder name="ExternalFiles"
-                   displayName="Important Files"
-                   projectFiles="false">
-      <itemPath>Makefile</itemPath>
-      <itemPath>avr128_tcp_client.mc3</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
@@ -106,13 +106,13 @@
         <targetDevice>AVR128DB48</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>nEdbgTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>2.45</languageToolchainVersion>
-        <platform>4</platform>
+        <languageToolchainVersion>2.50</languageToolchainVersion>
+        <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="AVR-Dx_DFP" vendor="Microchip" version="2.3.272"/>
+        <pack name="AVR-Dx_DFP" vendor="Microchip" version="2.6.303"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -147,7 +147,7 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="define-macros" value="RNWF_INTERFACE_DEBUG"/>
+        <property key="define-macros" value=""/>
         <property key="disable-optimizations" value="false"/>
         <property key="extra-include-directories" value=""/>
         <property key="favor-optimization-for" value="-speed,+space"/>
@@ -177,6 +177,7 @@
       </HI-TECH-COMP>
       <HI-TECH-LINK>
         <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-checksumAVR" value=""/>
         <property key="additional-options-code-offset" value=""/>
         <property key="additional-options-command-line" value=""/>
         <property key="additional-options-errata" value=""/>
@@ -229,6 +230,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -298,6 +300,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"

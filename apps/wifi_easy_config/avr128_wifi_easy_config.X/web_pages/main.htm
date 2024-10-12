@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><head><style>
+body {font-family: Verdana, Arial, sans-serif;background: #5b5b5b;margin: 0px auto;padding: 0 0 20px 0;}
+#shadow-one {width: 760px;border: 1px solid #555;border-top: 0;margin: 0px auto;}
+#shadow-two {border: 1px solid #4b4b4b;border-top: 0;}
+#shadow-three {border: 1px solid #444;border-top: 0;}
+#shadow-four {border: 1px solid #3a3a3a;border-top: 0;}
+#page {border: 1px solid #333;background: rgb(241, 236, 236);border-top: 0;padding: 20px;font-size: 10pt;}
+#title {background: #d72622;padding: 4px;font-weight: bold;color: #fff;margin-bottom: 15px;height: 16px;}
+#title .right {float: right;width: 500px;text-align: right;}
+#content {width: 525px;float: right;padding-right: 10px;}
+#content a {color: #c00;text-decoration: none;}
+#footer {font-size: 0.8em;color: #666;text-align: right;margin: 10px 50px 0 50px;padding-top: 10px;border-top: 1px dotted #666;}
+#content h1 {margin-top: 0px;}
+.spacer {clear: both;}
+th {text-align: left;}
+button {width: 120px;}
+.collapse {visibility: collapse;}
+.visible {visibility: visible;}</style>
+<script>document.addEventListener('readystatechange', event => { 
+if (event.target.readyState === "complete") {
+document.getElementById('scan').disabled = false;
+document.getElementById('provision').disabled = false;
+}});
+function checkSecurity(ssid){
+var result_style = document.getElementById('passphrase').style;
+if(Number(ssid.options[ssid.selectedIndex].value.split(',')[1])){
+result_style.display = 'table-row'} else { result_style.display = 'none'}}
+function showPwd() {
+  var x = document.getElementById("pwd");
+  if (x.type === "password") {x.type = "text";} else {x.type = "password";}}
+function provisionSTA() {
+var xhttp = new XMLHttpRequest();
+var ssid_list = document.getElementById("ap_list");
+var pwd = document.getElementById("pwd");
+var ssid = ssid_list.options[ssid_list.selectedIndex].value.split(',')[0];
+var security = Number(ssid_list.options[ssid_list.selectedIndex].value.split(',')[1]);
+var passphrase = pwd.value;
+var creds = ["ssid:"+ssid, "security:"+security, "pwd:"+passphrase];
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+var status = document.getElementById("status");
+console.log(this.responseText);
+status.innerHTML = this.responseText;
+document.getElementById('scan').disabled = true;
+document.getElementById('provision').disabled = true;
+}};
+xhttp.open("POST", "/provision", true);
+xhttp.send(creds);}
+function loadAPList() {
+var xhttp = new XMLHttpRequest();
+document.getElementById('scan').disabled = true;
+xhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+console.log(this.responseText);
+var docFrag = document.createDocumentFragment();
+var scan_list = this.responseText.split('|');
+for(var i = 0; i<(scan_list.length-2); i++){
+var scan_entry = scan_list[i];
+if(scan_entry.includes('[]') === false){
+var scan_info = scan_list[i].split('"');
+var ap_info = [scan_info[3], scan_info[0].split(' ')[1]]; 
+docFrag.appendChild(new Option(scan_info[3], ap_info));
+}}var ssid_list = document.getElementById("ap_list");
+while (ssid_list.firstChild){ssid_list.removeChild(ssid_list.firstChild);}
+ssid_list.appendChild(docFrag);}};
+document.getElementById('scan').disabled = false;
+xhttp.open("GET", "/scan", true);
+xhttp.send();
+}</script>
+</head><body>
+<div id="shadow-one"><div id="shadow-two"><div id="shadow-three"><div id="shadow-four">
+<div id="page">    
+<div style="padding:0 0 65px 5px"><img src="mchp.gif" alt="Microchip" align="left"/></div>
+<div id="title"><div class="right">RNWF02 Wi-Fi Easy Config Demo Application</div><span id="hello">&nbsp;</span></div>    
+<div id="content">
+<h1>Welcome!</h1>
+<p>This site enables the user to configure the RNWF02 module Wi-Fi credentials.</p>
+<p>This examples uses AJAX techniques to provide real-time feedback.</p>
+<br></br>
+<table><tr>
+<th><label for="ap_list">SSID:</label></th>
+<th><select name="ssid" id="ap_list" onchange="checkSecurity(this)">
+<option >Scan for new AP list</option>  
+</select></th></tr>
+<tr style='display: none' id="passphrase">
+<th><label for="pwd">Password:</label></th>
+<th><input type="password" id="pwd" name="pwd"></input></th>
+<th><input type="checkbox" onclick="showPwd()">Show Password</th>
+</tr><tr>
+<th><button type="button" disabled id="scan" onclick="loadAPList()">Scan</button></th>
+<th><button type="submit" disabled id="provision" onclick="provisionSTA()">Provision</button></th>
+</tr>
+<tr><th></th><th><span id="status"></span></th></tr>  
+</table></div>
+
+<div class="spacer">&nbsp;</div>
+<div id="footer">Copyright &copy; 2023 Microchip Technology, Inc.</div>
+</div></div></div></div></div></body></html>

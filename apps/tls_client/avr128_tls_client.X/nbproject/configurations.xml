@@ -11,11 +11,11 @@
           <itemPath>mcc_generated_files/reset/rstctrl.h</itemPath>
         </logicalFolder>
         <logicalFolder name="rnwf" displayName="rnwf" projectFiles="true">
-          <itemPath>mcc_generated_files/rnwf/rnwf_interface.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_app.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.h</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.h</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_system_service.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_interface.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_net_service.h</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_app.h</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <logicalFolder name="utils" displayName="utils" projectFiles="true">
@@ -26,29 +26,35 @@
             <itemPath>mcc_generated_files/system/utils/assembler.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/utils.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/interrupt_avr8.h</itemPath>
+            <itemPath>mcc_generated_files/system/utils/utils_assert.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/atomic.h</itemPath>
             <itemPath>mcc_generated_files/system/utils/compiler.h</itemPath>
-            <itemPath>mcc_generated_files/system/utils/utils_assert.h</itemPath>
           </logicalFolder>
-          <itemPath>mcc_generated_files/system/protected_io.h</itemPath>
+          <itemPath>mcc_generated_files/system/ccp.h</itemPath>
           <itemPath>mcc_generated_files/system/clock.h</itemPath>
           <itemPath>mcc_generated_files/system/interrupt.h</itemPath>
-          <itemPath>mcc_generated_files/system/ccp.h</itemPath>
-          <itemPath>mcc_generated_files/system/port.h</itemPath>
           <itemPath>mcc_generated_files/system/system.h</itemPath>
-          <itemPath>mcc_generated_files/system/config_bits.h</itemPath>
           <itemPath>mcc_generated_files/system/pins.h</itemPath>
+          <itemPath>mcc_generated_files/system/config_bits.h</itemPath>
+          <itemPath>mcc_generated_files/system/protected_io.h</itemPath>
+          <itemPath>mcc_generated_files/system/port.h</itemPath>
         </logicalFolder>
         <logicalFolder name="timer" displayName="timer" projectFiles="true">
           <itemPath>mcc_generated_files/timer/delay.h</itemPath>
         </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
+          <itemPath>mcc_generated_files/uart/uart_types.h</itemPath>
+          <itemPath>mcc_generated_files/uart/usart2.h</itemPath>
           <itemPath>mcc_generated_files/uart/uart_drv_interface.h</itemPath>
           <itemPath>mcc_generated_files/uart/usart3.h</itemPath>
-          <itemPath>mcc_generated_files/uart/usart2.h</itemPath>
-          <itemPath>mcc_generated_files/uart/uart_types.h</itemPath>
         </logicalFolder>
       </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="true">
+      <itemPath>Makefile</itemPath>
+      <itemPath>avr128_tls_client.mc3</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -61,20 +67,20 @@
                      displayName="MCC Generated Files"
                      projectFiles="true">
         <logicalFolder name="rnwf" displayName="rnwf" projectFiles="true">
-          <itemPath>mcc_generated_files/rnwf/rnwf_app.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_system_service.c</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_wifi_service.c</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_net_service.c</itemPath>
           <itemPath>mcc_generated_files/rnwf/rnwf_interface.c</itemPath>
-          <itemPath>mcc_generated_files/rnwf/rnwf_system_service.c</itemPath>
+          <itemPath>mcc_generated_files/rnwf/rnwf_app.c</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <logicalFolder name="src" displayName="src" projectFiles="true">
-            <itemPath>mcc_generated_files/system/src/system.c</itemPath>
             <itemPath>mcc_generated_files/system/src/clock.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/system.c</itemPath>
             <itemPath>mcc_generated_files/system/src/protected_io.S</itemPath>
-            <itemPath>mcc_generated_files/system/src/pins.c</itemPath>
             <itemPath>mcc_generated_files/system/src/config_bits.c</itemPath>
             <itemPath>mcc_generated_files/system/src/interrupt.c</itemPath>
+            <itemPath>mcc_generated_files/system/src/pins.c</itemPath>
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="timer" displayName="timer" projectFiles="true">
@@ -91,12 +97,6 @@
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
-    <logicalFolder name="ExternalFiles"
-                   displayName="Important Files"
-                   projectFiles="false">
-      <itemPath>Makefile</itemPath>
-      <itemPath>avr128_tls_client.mc3</itemPath>
-    </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -106,13 +106,13 @@
         <targetDevice>AVR128DB48</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>nEdbgTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>2.45</languageToolchainVersion>
-        <platform>4</platform>
+        <languageToolchainVersion>2.50</languageToolchainVersion>
+        <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="AVR-Dx_DFP" vendor="Microchip" version="2.3.272"/>
+        <pack name="AVR-Dx_DFP" vendor="Microchip" version="2.6.303"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -177,6 +177,7 @@
       </HI-TECH-COMP>
       <HI-TECH-LINK>
         <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-checksumAVR" value=""/>
         <property key="additional-options-code-offset" value=""/>
         <property key="additional-options-command-line" value=""/>
         <property key="additional-options-errata" value=""/>
@@ -228,7 +229,8 @@
         <property key="communication.speed" value="0.500"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -252,6 +254,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Rio-0-RN/FW-v2-MBOs/rel-2.0/rc1_apps/tcp_client/avr128_tls_client.X/debug/default/avr128_tls_client_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -297,7 +301,8 @@
         <property key="communication.speed" value="0.500"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -321,6 +326,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Rio-0-RN/FW-v2-MBOs/rel-2.0/rc1_apps/tcp_client/avr128_tls_client.X/debug/default/avr128_tls_client_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"

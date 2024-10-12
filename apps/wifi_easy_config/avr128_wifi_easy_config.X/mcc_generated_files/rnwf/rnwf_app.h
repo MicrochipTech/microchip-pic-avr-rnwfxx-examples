@@ -1,19 +1,17 @@
- /*
- * MAIN Generated Driver File
+/**
+ * Application header file
  * 
  * @file rnwf_app.h
  * 
- * @defgroup 
- *
- * @ingroup
+ * @defgroup rnwf_app RNWF Application
  * 
- * @brief 
+ * @brief Application header file
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -35,8 +33,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef RNWF_APP_H
-#define	RNWF_APP_H
+#ifndef RNWF02_APP_H
+#define	RNWF02_APP_H
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -51,11 +49,20 @@
 /* Wi-Fi Configuration */
 
 
+/* feature additions from FW v2.0.0*/
+#define APP_BUFFER_SZ           255
+#define COUNTRY_CODE            "GEN"
+ 
+ 
 
 
 
-
+/**
+ * @ingroup rnwf_app
+ * @brief App initialization function to initialize Wi-Fi parameters
+ * @param None
+ * @return None
+ */
 void RNWF_APP_Initialize(void);
-RNWF_RESULT_t RNWF_IF_Init(void);
 
-#endif	/* RNWF_APP_H */
+#endif	/* RNWF02_APP_H */

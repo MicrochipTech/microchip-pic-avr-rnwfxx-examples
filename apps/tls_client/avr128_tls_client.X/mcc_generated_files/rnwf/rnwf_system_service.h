@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * RNWFxx System service header file
  * 
  * @file rnwf_system_service.h
  * 
- * @defgroup 
- *
- * @ingroup
+ * @defgroup system_service System Service
  * 
- * @brief 
+ * @brief This header file contains data types for System service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -33,13 +31,6 @@
     THIS SOFTWARE.
 */
 
-
-
-/*! \page system_service System Service Layer
-This page introduces the user to the topic.
-*/
-
-
 // This is a guard condition so that contents of this file are not included
 // more than once.  
 #ifndef RNWF_SYSTEM_SERVICE_H
@@ -55,11 +46,23 @@ This page introduces the user to the topic.
 #define RNWF_GET_REV_ID         "AT+GMR\r\n"
 #define RNWF_GET_DEV_INFO       "AT+DI\r\n"
 
-
+/* feature addition from FW v2.0.0*/
+#define RNWF_SET_SNTP_DISABLE   "AT+SNTPC=1,0\r\n"
+ 
 #define RNWF_SET_SNTP_ENBL      "AT+SNTPC=1,1\r\n"
 #define RNWF_SET_SNTP_STATIC    "AT+SNTPC=2,1\r\n"
-#define RNWF_SET_SNTP_DHCP      "AT+SNTPC=2,1\r\n"
-#define RNWF_SET_SNTP_URL       "AT+SNTPC=3,\"%s\"\r\n"
+#define RNWF_SET_SNTP_DHCP      "AT+SNTPC=2,0\r\n"
+/* feature addition from FW v2.0.0*/
+#define RNWF_SET_SNTP_SVR_ADDR  "AT+SNTPC=3,\"%s\"\r\n"
+ 
+ 
+
+/* feature addition from FW v2.0.0*/ 
+#define RNWF_SET_DNS_AUTO       "AT+DNSC=2,1\r\n"
+#define RNWF_SET_DNS_MANUAL     "AT+DNSC=2,0\r\n"
+#define RNWF_SET_DNS_SERVER_ADD "AT+DNSC=1,\"%s\"\r\n"
+#define RNWF_SET_DNS_TIMEOUT    "AT+DNSC=3,%u\r\n"
+ 
 
 #define RNWF_GET_SYS_TIME       "AT+TIME,3\r\n"
 
@@ -75,30 +78,22 @@ This page introduces the user to the topic.
 
 #define RNWF_GET_MQTT_IFNO     "AT+MQTTC\r\n"
 
-#ifdef RNWF11_SERVICE
-#define RNWF_TRIGGER_BOOTLOADER "AT+TBL\r\n"
-#endif
 
 /**
- @defgroup SERVICE_GRP System Service API
- @{
- */
-
-
-/**
- @brief System Service List
- 
+ * @ingroup     system_service
+ * @brief       System Service List
+ * @enum        RNWF_SYSTEM_SERVICE_t
  */
 typedef enum{
     RNWF_SYSTEM_RESET,             /**<Request/Trigger reset the system */
-#ifdef RNWF11_SERVICE    
-    RNWF_SYSTEM_TBL,               /**<Request/Trigger reset the system to bootloader mode */
-#endif
     RNWF_SYSTEM_SW_REV,            /**<Request Software Revision */
-    RNWF_SYSTEM_DEV_INFO,            /**<Request Software Revision */            
+    RNWF_SYSTEM_DEV_INFO,          /**<Request Software Revision */            
     RNWF_SYSTEM_ECHO_OFF,          /**<Request/Trigger reset the system */            
     RNWF_SYSTEM_GET_MAN_ID,        /**<Get the manufacturing ID */
-    RNWF_SYSTEM_SET_SNTP,          /**<Enable SNTP with given server URL */
+    RNWF_SYSTEM_SET_SNTP,          /**<Enable SNTP */
+    RNWF_SYSTEM_RMV_SNTP,          /**<Disable SNTP */
+    RNWF_SYSTEM_SET_DNS,           /**<Configure DNS */
+     
     RNWF_SYSTEM_SET_TIME_UNIX,     /**<Set the sytem time in UNIX format */            
     RNWF_SYSTEM_SET_TIME_NTP,      /**<Set the system time in NTP format */            
     RNWF_SYSTEM_SET_TIME_STRING,   /**<Set the system time in string(YYYY-MM-DDTHH:MM:SS.00Z) format */                        
@@ -111,14 +106,12 @@ typedef enum{
 
 
 /**
- * @brief System Service Layer API to handle system operations.
- * 
- *
- * @param[in] request   Service request ::RNWF_SYSTEM_SERVICE_t
- * @param[in] input     Parameters for the requested service
- * 
- * @return ::RNWF_PASS Requested service is handled successfully
- * @return ::RNWF_FAIL Requested service has failed
+ * @ingroup     system_service
+ * @brief       System Service Layer API to handle system operations
+ * @param[in]   request   Service request of type RNWF_SYSTEM_SERVICE_t
+ * @param[in]   input     Parameters for the requested service
+ * @retval      RNWF_PASS Requested service is handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
  */
 RNWF_RESULT_t RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_SERVICE_t request, void *input);
 

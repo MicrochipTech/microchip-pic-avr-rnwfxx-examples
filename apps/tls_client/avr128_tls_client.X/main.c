@@ -7,11 +7,13 @@
  * 
  * @brief This is the generated driver implementation file for the MAIN driver.
  *
- * @version MAIN Driver Version 1.0.0
+ * @version MAIN Driver Version 1.0.2
+ *
+ * @version Package Version: 3.1.2
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -42,7 +44,7 @@
 void APP_SW_RESET_Handler(void)
 {
     RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_RESET, NULL);    
-    DELAY_milliseconds(3500);    
+    DELAY_milliseconds(6000);    
     RSTCTRL_reset();    
 }
 
@@ -53,11 +55,11 @@ int main(void)
     uint16_t cert_list[512];
     
     SYSTEM_Initialize();
-    // Main Section();  
+    // Main Section();
     PB2_SetInterruptHandler(APP_SW_RESET_Handler);
 
     RNWF_IF_Init();
-    
+
     printf("%s", "##################################\n");
     printf("%s", "  Welcome RNWF02 TLS Client Demo  \n");
     printf("%s", "##################################\n");            

@@ -1,19 +1,17 @@
- /*
- * MAIN Generated Driver File
+/**
+ * Application header file
  * 
  * @file rnwf_app.h
  * 
- * @defgroup 
+ * @defgroup rnwf_app RNWF Application
  *
- * @ingroup
- * 
- * @brief 
+ * @brief Application header file
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -35,8 +33,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef RNWF_APP_H
-#define	RNWF_APP_H
+#ifndef RNWF02_APP_H
+#define	RNWF02_APP_H
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -50,15 +48,31 @@
 
 /* Wi-Fi Configuration */
 
-#define HOME_AP_SSID        "wsn"
-#define HOME_AP_PASSPHRASE  "brucenegley"
-#define HOME_AP_SECURITY     RNWF_WPA2_MIXED
+#define HOME_AP_SSID            "wsn"
+#define HOME_AP_PASSPHRASE      "brucenegley"
+#define HOME_AP_SECURITY        RNWF_WPA2_MIXED
+
+/* feature additions from FW v2.0.0*/
+#define APP_BUFFER_SZ           255
+#define TOTAL_NET_SOCK_NUM      1
+#define COUNTRY_CODE            "GEN"
+#define PING_ENABLE             1
+#define PING_TO_ADDRESS         "192.168.0.195"
+#define CHANNEL_NUMBER          0
+ 
+#define STA_AUTOCONNECT         1
+#define CONNECTION_TIMEOUT      10000
+#define HOME_AP_BSSID           ""
+ 
 
 
 
-
-
+/**
+ * @ingroup rnwf_app
+ * @brief App initialization function to initialize Wi-Fi parameters
+ * @param None
+ * @return None
+ */
 void RNWF_APP_Initialize(void);
-RNWF_RESULT_t RNWF_IF_Init(void);
 
-#endif	/* RNWF_APP_H */
+#endif	/* RNWF02_APP_H */

@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * Wi-Fi provisioning service implementation source file
  * 
  * @file rnwf_provision_service.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup provision_service
  * 
- * @brief 
+ * @brief This file contains APIs and data types for Wi-fi provisioning service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* ************************************************************************** */
@@ -87,9 +79,17 @@ RNWF_NET_SOCKET_t provision_socket = {
         .bind_type = RNWF_BIND_LOCAL,
         .sock_port = 80,
         .sock_type = RNWF_SOCK_TCP,
+    /* feature additions from FW v2.0.0*/
+        .sockIP = RNWF_NET_SOCK_IPv4,
+ 
         };
 
-/*Parse or translate security type received from mobile app*/
+/**
+ * @ingroup     provision_service
+ * @brief       Function to parse or translate security type received from mobile app
+ * @param[in]   secType      Security authentication Type  
+ * @return      WI-Fi security mode
+ */
 RNWF_WIFI_SECURITY_t RNWF_PROV_ParseAuth(uint8_t secType)
 {
     RNWF_WIFI_SECURITY_t authType;
@@ -116,8 +116,14 @@ RNWF_WIFI_SECURITY_t RNWF_PROV_ParseAuth(uint8_t secType)
     return authType;
 }
             
-/* Parse Wi-Fi configuration file */
-/* Format is APP_WIFI_PROV_WIFI_CONFIG_ID,<SSID>,<AUTH>,<PASSPHRASE>*/
+/**
+ * @ingroup provision_service
+ * @brief       Function to parse Wi-Fi configuration file
+ * @param[in]   wifiConfig       Wi-Fi configuration in form of SSID, authentication and passphrase
+ * @param[in]   wifi_config      Wi-Fi config structure to store SSID, Auth type and passphrase  
+ * @retval      RNWF_PASS        When successful
+ * @retval      RNWF_FAIL        When fails
+ */
 RNWF_RESULT_t RNWF_PROV_APP_Parse(uint8_t *wifiCofnig, RNWF_WIFI_PARAM_t *wifi_config)
 {
     char* p;    
@@ -170,7 +176,14 @@ RNWF_RESULT_t RNWF_PROV_APP_Parse(uint8_t *wifiCofnig, RNWF_WIFI_PARAM_t *wifi_c
     return ret;
 }
 
-
+/**
+ * @ingroup provision_service
+ * @brief       Wi-Fi provisioning process using Mobile App method
+ * @param[in]   socket       Socket address
+ * @param[in]   rx_len       Length of received data at socket address
+ * @retval      RNWF_PASS    When successful
+ * @retval      RNWF_FAIL    When fails
+ */
 RNWF_RESULT_t RNWF_APP_PROV_Process(uint32_t socket, uint16_t rx_len) {
         
     RNWF_WIFI_PARAM_t wifiConfig;
@@ -196,6 +209,14 @@ RNWF_RESULT_t RNWF_APP_PROV_Process(uint32_t socket, uint16_t rx_len) {
     return RNWF_FAIL;
 }
 
+/**
+ * @ingroup     provision_service
+ * @brief       Wi-Fi provisioning socket callback handler function for net socket events
+ * @param[in]   sock         Socket address
+ * @param[in]   event        Net socket event type
+ * @param[in]   p_str        Input parameters required for the requested service  
+ * @return      None
+ */
 void RNWF_PROV_SOCKET_Callback(uint32_t sock, RNWF_NET_SOCK_EVENT_t event, uint8_t *p_str)
 {
     switch(event)
@@ -218,15 +239,26 @@ void RNWF_PROV_SOCKET_Callback(uint32_t sock, RNWF_NET_SOCK_EVENT_t event, uint8
     }
 }
 
+/**
+ * @ingroup provision_service
+ * @brief       Wi-Fi provisioning callback handler
+ * @param[in]   event       Wi-Fi event type
+ * @param[in]   p_str       Input required for requested service
+ * @return      None
+ */
 void RNWF_PROV_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
 {            
     switch(event)
     {
-        case RNWF_DHCP_DONE:
-            printf("DHCP IP:%s\n", &p_str[2]);
+        /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_IPV4_DONE:
+        {
+            printf("\n\rDHCP IPv4: %s\n\n\r", &p_str[2]);
             RNWF_NET_SOCK_SrvCtrl(RNWF_NET_SOCK_TCP_OPEN, &provision_socket);
-            
             break;
+        }
+     
+ 
         case RNWF_SCAN_INDICATION:
         {
             break;            

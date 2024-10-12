@@ -4,7 +4,7 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>avr128_ota_demo</name>
-            <creation-uuid>38841a1c-de68-4ee7-931c-0a86c2e98fb6</creation-uuid>
+            <creation-uuid>a006aa9f-2355-4168-a1a8-eb6e06f29dd1</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
