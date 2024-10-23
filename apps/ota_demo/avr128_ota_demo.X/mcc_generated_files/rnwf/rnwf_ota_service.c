@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * OTA Service source file
  * 
  * @file rnwf_ota_service.c
  * 
- * @defgroup 
- *
- * @ingroup
+ * @ingroup ota_service
  * 
- * @brief 
+ * @brief This file contains APIs and data types for OTA service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* This section lists the other files that are included in this file.
@@ -74,10 +66,6 @@ easy and quick applciation development.
 RNWF_OTA_CALLBACK_t gOta_CallBack_Handler;
 
 uint8_t *g_ota_buf = NULL;//[OTA_BUF_LEN_MAX];
-#ifdef RNWF11_SERVICE
-uint32_t g_crc_tab[256];
-uint32_t g_crc = 0xffffffff;
-#endif
 /* ************************************************************************** */
 /* ************************************************************************** */
 // Section: Local Functions                                                   */
@@ -88,44 +76,15 @@ volatile uint32_t total_rx = 0;
 
 uint32_t otaFileSize = 0;
 
-#ifdef RNWF11_SERVICE
-RNWF_RESULT_t RNWF_OTA_CRC32_Init(uint32_t crc_tab[256])
-{
-    uint32_t   i, j, value;
 
-    for (i = 0; i < 256; i++)
-    {
-        value = i;
-        for (j = 0; j < 8; j++)
-        {
-            if (value & 1)
-            {
-                value = (value >> 1) ^ 0xEDB88320;
-            }
-            else
-            {
-                value >>= 1;
-            }
-        }
-        crc_tab[i] = value;
-    }
-
-    return RNWF_PASS;
-}
-
-RNWF_RESULT_t RNWF_OTA_CRC32_Generate(uint8_t* data_buf, uint32_t size, uint32_t* crc, uint32_t crc_tab[256])
-{
-    uint32_t   i;
-
-    for (i = 0; i < size; i++)
-    {
-        *crc = crc_tab[(*crc ^ data_buf[i]) & 0xff] ^ (*crc >> 8);
-    }
-
-    return RNWF_PASS;
-}
-#endif
-
+/**
+ * @ingroup     ota_service
+ * @brief       OTA configuration process function
+ * @param[in]   socket        Socket address
+ * @param[in]   rx_len        Input data for requested service
+ * @retval      RNWF_PASS when successful
+ * @retval      RNWF_FAIL when fails
+*/
 RNWF_RESULT_t RNWF_OTA_CONF_Process(uint32_t socket, uint16_t rx_len)
 {
     int32_t read_size, result;
@@ -158,6 +117,8 @@ RNWF_RESULT_t RNWF_OTA_CONF_Process(uint32_t socket, uint16_t rx_len)
         otaCfg.socket.tls_conf = 0;
         otaCfg.socket.bind_type = RNWF_BIND_REMOTE;
         otaCfg.socket.sock_type = RNWF_SOCK_TCP;
+        otaCfg.socket.sockIP = RNWF_NET_SOCK_IPv4; /* feature addition from FW v2.0.0*/
+     
         sscanf(args[OTA_CFG_PARAM_PORT], "%u", &otaCfg.socket.sock_port);
         otaCfg.socket.sock_addr = args[OTA_CFG_PARAM_SERVER];
         otaCfg.file = args[OTA_CFG_PARAM_FILE];
@@ -169,6 +130,14 @@ RNWF_RESULT_t RNWF_OTA_CONF_Process(uint32_t socket, uint16_t rx_len)
     return RNWF_PASS;
 }
 
+/**
+ * @ingroup     ota_service
+ * @brief       OTA download process function
+ * @param[in]   socket        Socket address
+ * @param[in]   rx_len        Input data for requested service
+ * @retval      RNWF_PASS when successful
+ * @retval      RNWF_FAIL when fails
+*/
 RNWF_RESULT_t RNWF_OTA_DWNLD_Process(uint32_t socket, uint16_t rx_len)
 {
     int32_t read_size;
@@ -299,6 +268,8 @@ RNWF_RESULT_t RNWF_OTA_SrvCtrl( RNWF_OTA_SERVICE_t request, void *input)
             ota_cfgSock.bind_type = RNWF_BIND_LOCAL;
             ota_cfgSock.sock_port = 6666;
             ota_cfgSock.sock_type = RNWF_SOCK_TCP;
+            ota_cfgSock.sockIP = RNWF_NET_SOCK_IPv4; /* feature addition from FW v2.0.0*/
+         
             ota_cfgSock.tls_conf = 0;
             /* RNWF Application Callback register */
             if(gOta_CallBack_Handler != NULL)
@@ -328,7 +299,6 @@ RNWF_RESULT_t RNWF_OTA_SrvCtrl( RNWF_OTA_SERVICE_t request, void *input)
 
         case RNWF_OTA_DFU_INIT:
         {
-#ifndef RNWF11_SERVICE      /* RNWF02 */
             uint8_t  peVersion = 0;
             uint32_t chipID = 0;
 
@@ -352,41 +322,13 @@ RNWF_RESULT_t RNWF_OTA_SrvCtrl( RNWF_OTA_SERVICE_t request, void *input)
             {
                 DBG_MSG_OTA("Chip ID didn't match\r\n");
                 result = RNWF_FAIL;
-            }   
-#else   /* RNWF11_SERVUCE */
-            
-            uint16_t BTL_Ver = 0;
-            int8_t btl_chk_cnt = 5;
-
-            RNWF_OTA_CRC32_Init(&g_crc_tab);
-            g_crc = 0xffffffff;
-
-            RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_TBL, NULL);  
-            DELAY_milliseconds(UART_DELAY_MSEC);
-
-            // Verify bootloader version
-            while (btl_chk_cnt)
-            {
-                BTL_Ver = DFU_UART_Read_Bootloader_Version();
-                DBG_MSG_OTA("BTL_Ver = 0x%x\r\n", BTL_Ver);
-                if (BTL_Ver != 0)
-                    break;
-
-                btl_chk_cnt--;
-                DELAY_milliseconds(500);
             }
-            if (btl_chk_cnt == 0)
-            {
-                result = RNWF_FAIL;
-            }
-#endif            
         }
         break;
 
         case RNWF_OTA_DFU_ERASE:
         {         
             
-#ifndef RNWF11_SERVICE      /* RNWF02 */
             
             RNWF_OTA_CHUNK_t *otaChunk = (RNWF_OTA_CHUNK_t *)input;             
             /* Erase */
@@ -397,52 +339,21 @@ RNWF_RESULT_t RNWF_OTA_SrvCtrl( RNWF_OTA_SERVICE_t request, void *input)
                 result = RNWF_FAIL;
             }
             
-#else   /* RNWF11_SERVUCE */
-            
-            RNWF_OTA_CHUNK_t *otaChunk = (RNWF_OTA_CHUNK_t *)input; 
-            bool result = false;
-            // Unlock the RNWF11 flash
-            result = DFU_UART_Unlock(otaChunk->chunk_addr, otaChunk->chunk_size);
-            result = DFU_UART_ERASE_APP();
-            
-#endif         
         }
         break;
 
         case RNWF_OTA_DFU_WRITE:
         {
             RNWF_OTA_CHUNK_t *otaChunk = (RNWF_OTA_CHUNK_t *)input;
-#ifndef RNWF11_SERVICE      /* RNWF02 */
             
             if(DFU_PE_Write(otaChunk->chunk_addr, otaChunk->chunk_size, otaChunk->chunk_ptr))
             {                
                 result = RNWF_FAIL;
             }
             
-#else   /* RNWF11_SERVUCE */
-            
-            RNWF_OTA_CRC32_Generate(otaChunk->chunk_ptr, otaChunk->chunk_size, &g_crc, &g_crc_tab);
-
-            if(DFU_UART_Write(otaChunk->chunk_addr, otaChunk->chunk_size, otaChunk->chunk_ptr) == false)
-            {                
-                result = RNWF_FAIL;
-            }
-#endif            
         }
         break;
  
-#ifdef RNWF11_SERVICE
-        case RNWF_OTA_DFU_RESET:
-        {
-            if (DFU_UART_Verify(g_crc) == true)
-            {
-                DBG_MSG_OTA("crc32 verify pass\r\n");
-                DFU_UART_Reset();
-            }
-            
-        }
-        break;
-#endif
 
         default:
             break;
@@ -452,7 +363,6 @@ RNWF_RESULT_t RNWF_OTA_SrvCtrl( RNWF_OTA_SERVICE_t request, void *input)
 
 
 /***********************RNWF02 DFU API's*************************/
-#ifndef RNWF11_SERVICE      /* RNWF02 */
 #ifdef DFU_DEBUG
 static uint32_t DFU_PE_htonl (uint32_t x)
 {
@@ -474,9 +384,7 @@ static uint32_t DFU_PE_htonl (uint32_t x)
     return ret;
 }
 #endif
-#endif
 
-#ifndef RNWF11_SERVICE      /* RNWF02 */
 
 void DFU_PE_InjectTestPattern(void)
 {
@@ -705,241 +613,6 @@ bool DFU_PE_Write(uint32_t address, const uint32_t length, uint8_t *PE_writeBuff
     return true;
 }
 
-#else   /* RNWF11_SERVICE */
-
-uint8_t send_request_cmd_data(uint8_t cmd, uint8_t *data, uint32_t dataLen, uint32_t dataAddr) {
-    uint8_t req[HEADER_SIZE];
-    int resp;
-    uint8_t byteResp;
-
-    if ( BL_CMD_DATA == cmd )
-    {
-        dataLen += 4;
-    }
-    
-    memset (req, 0, sizeof(req));
-    
-    req[0] = (uint8_t)(BL_GUARD & 0xFF);        // store the least significant byte
-    req[1] = (uint8_t)((BL_GUARD >> 8) & 0xFF); 
-    req[2] = (uint8_t)((BL_GUARD >> 16) & 0xFF);
-    req[3] = (uint8_t)((BL_GUARD >> 24) & 0xFF);
-    req[4] = (uint8_t)(dataLen & 0xFF);        // store the least significant byte
-    req[5] = (uint8_t)((dataLen >> 8) & 0xFF); 
-    req[6] = (uint8_t)((dataLen >> 16) & 0xFF);
-    req[7] = (uint8_t)((dataLen >> 24) & 0xFF);
-    req[8] = cmd;
- 
-    RNWF_IF_Write((uint8_t *)&req, HEADER_SIZE);
-    DELAY_microseconds(WRITE_DELAY_USEC);
-    
-    if ( 0 == dataLen)
-    {
-        uint8_t extraData[4];
-        memset(extraData, 0, sizeof(extraData));
-        RNWF_IF_Write(data, CMD_ONLY_EXTRA_SIZE);
-        DELAY_microseconds(WRITE_DELAY_USEC);
-    }
-    else
-    {
-        uint8_t addrBuf[ADDR_SIZE];
-
-    
-        addrBuf[0] = (uint8_t)(dataAddr & 0xFF);        // store the least significant byte
-        addrBuf[1] = (uint8_t)((dataAddr >> 8) & 0xFF); 
-        addrBuf[2] = (uint8_t)((dataAddr >> 16) & 0xFF);
-        addrBuf[3] = (uint8_t)((dataAddr >> 24) & 0xFF);
-    
-        RNWF_IF_Write(addrBuf, ADDR_SIZE);
-        DELAY_microseconds(WRITE_DELAY_USEC);
-    
-        RNWF_IF_Write(data, dataLen);
-        DELAY_microseconds(WRITE_DELAY_USEC);
-    }
-
-    resp = RNWF_IF_Read(&byteResp, 1);
-    
-    if (resp == 0)
-    {
-        DBG_MSG_OTA("ERROR: no response after write\r\n");
-        byteResp = BL_RESP_NONE;
-    }
-
-        
-    return byteResp;
-}
-
-
-uint8_t send_request(uint8_t cmd, uint8_t *data, int dataLen) {
-    uint8_t req[HEADER_SIZE + CMD_ONLY_EXTRA_SIZE + dataLen];
-    int resp;
-    int cnt = 10;
-    uint8_t byteResp;
-    
-    memset (req, 0, sizeof(req));
-    
-    req[0] = (uint8_t)(BL_GUARD & 0xFF);        // store the least significant byte
-    req[1] = (uint8_t)((BL_GUARD >> 8) & 0xFF); 
-    req[2] = (uint8_t)((BL_GUARD >> 16) & 0xFF);
-    req[3] = (uint8_t)((BL_GUARD >> 24) & 0xFF);
-    req[4] = (uint8_t)(dataLen & 0xFF);        // store the least significant byte
-    req[5] = (uint8_t)((dataLen >> 8) & 0xFF); 
-    req[6] = (uint8_t)((dataLen >> 16) & 0xFF);
-    req[7] = (uint8_t)((dataLen >> 24) & 0xFF);
-    req[8] = cmd;
-    
-    RNWF_IF_Write((uint8_t *)&req, HEADER_SIZE);
-    DELAY_microseconds(WRITE_DELAY_USEC);
-    
-    if ( 0 == dataLen)
-    {
-        uint8_t extraData[4];
-        memset(extraData, 0, sizeof(extraData));
-        RNWF_IF_Write(data, CMD_ONLY_EXTRA_SIZE);
-        DELAY_microseconds(WRITE_DELAY_USEC);
-    }
-    else
-    {  
-        RNWF_IF_Write(data, dataLen);
-        //DBG_MSG_OTA("data is 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\r\n", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-        DELAY_microseconds(WRITE_DELAY_USEC);
-    }
- 
-    
-    resp = 0;
-    while (resp == 0 && cnt > 0)
-    {
-        resp = RNWF_IF_Read(&byteResp, 1);
-        
-        if (resp == 0)
-        {
-            DBG_MSG_OTA("ERROR: no response after write, %d\r\n", cnt);
-            byteResp = BL_RESP_NONE;
-        }
-        cnt--;
-    }
-    
-    return byteResp;
-}
-
-
-bool DFU_UART_Write(uint32_t address, const uint32_t length, uint8_t *writeBuffer)
-{
-    uint8_t resp;
-    
-    resp = send_request_cmd_data(BL_CMD_DATA, writeBuffer, length, address);
-    
-    if ( BL_RESP_OK == resp)
-        return true;
-    else
-        return false;
-}
-
-bool DFU_UART_Verify(uint32_t crc)
-{
-    uint8_t resp;
-    uint8_t dataBuf[4];
-    bool res = false;
-    
-    memcpy(dataBuf, &crc, sizeof(crc));
-    resp = send_request(BL_CMD_VERIFY, dataBuf, sizeof(dataBuf));
-    
-    if ( BL_RESP_CRC_OK == resp)
-    {
-        DBG_MSG_OTA("crc32 verify success\r\n");
-        res = true;
-    }
-    else
-    {
-        DBG_MSG_OTA("crc32 verify fail\r\n");
-    }
-
-    return res;
-}
-
-bool DFU_UART_ERASE_APP(void)
-{
-    uint8_t resp;
-    uint8_t dataBuf[16];
-    bool res = false;
-    
-    memset(dataBuf, 0, sizeof(dataBuf));
-
-    resp = send_request(BL_CMD_ERASE_APP, dataBuf, 16);
-    
-    if ( BL_RESP_OK == resp)
-    {
-        res = true;
-    }
-    return res;
-}
-
-bool DFU_UART_Reset(void)
-{
-    uint8_t resp;
-    uint8_t dataBuf[16];
-    bool res = false;
-    
-    memset(dataBuf, 0, sizeof(dataBuf));
-
-    resp = send_request(BL_CMD_RESET, dataBuf, 16);
-    
-    if ( BL_RESP_OK == resp)
-    {
-        res = true;
-    }
-    return res;
-}
-
-bool DFU_UART_Unlock(uint32_t address, uint32_t size)
-{
-    uint8_t resp;
-    uint8_t dataBuf[8];
-    bool res = false;
-    
-
-    dataBuf[0] = (uint8_t)(address & 0xFF);        // store the least significant byte
-    dataBuf[1] = (uint8_t)((address >> 8) & 0xFF); 
-    dataBuf[2] = (uint8_t)((address >> 16) & 0xFF);
-    dataBuf[3] = (uint8_t)((address >> 24) & 0xFF);
-    
-    dataBuf[4] = (uint8_t)(size & 0xFF);        // store the least significant byte
-    dataBuf[5] = (uint8_t)((size >> 8) & 0xFF); 
-    dataBuf[6] = (uint8_t)((size >> 16) & 0xFF);
-    dataBuf[7] = (uint8_t)((size >> 24) & 0xFF);
-    
-    
-    resp = send_request(BL_CMD_UNLOCK, dataBuf, 8);
-    
-    if ( BL_RESP_OK == resp)
-    {
-        res = true;
-    }
-    return res;
-}
-
-uint16_t DFU_UART_Read_Bootloader_Version(void)
-{
-    uint8_t resp, majorVer, minorVer;
-    uint8_t res;
-    uint16_t version = 0;
-
-    resp = send_request(BL_CMD_READ_VERSION, NULL, 0);
-    
-    if ( BL_RESP_OK == resp)
-    {
-        res = RNWF_IF_Read(&majorVer, 1);
-        res = RNWF_IF_Read(&minorVer, 1);
-
-        version = (uint16_t)majorVer << 8 | minorVer;
-    }
-    else
-    {
-        DBG_MSG_OTA("ERROR: Fail to read the bootloader version\r\n");
-    }
-    return version;
-}
-
-#endif
 
 void DFU_Reset(void)
 {

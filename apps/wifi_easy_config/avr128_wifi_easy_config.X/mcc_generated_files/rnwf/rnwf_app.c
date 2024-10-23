@@ -1,19 +1,17 @@
- /*
- * MAIN Generated Driver File
+/**
+ * Application source file
  * 
  * @file rnwf_app.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup rnwf_app
  * 
- * @brief 
+ * @brief Application file
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -35,6 +33,7 @@
 
 #include "rnwf_app.h"
 #include "rnwf_wifi_service.h"
+#include "rnwf_system_service.h"
 #include "rnwf_provision_service.h"
 
 /*
@@ -42,15 +41,30 @@
 */
 
 
+/* feature additions from FW v2.0.0*/
+uint8_t appBuffer[APP_BUFFER_SZ];
 
 
 
 
 
+
+
+/**
+ * @ingroup rnwf_app
+ * @brief Wi-Fi callback function for Wi-Fi events like scan, SNTP, DHCP
+ * @param[in] event         Wi-Fi event type
+ * @param[in] p_str         string pointer
+ * @return None
+ */
 void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
 {
     switch(event)
     {
+        case RNWF_SNTP_UP:
+        {   
+            break;
+        }
         case RNWF_CONNECTED:
         {
             printf("Wi-Fi Connected\n");
@@ -62,17 +76,39 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
             RNWF_WIFI_SrvCtrl(RNWF_STA_CONNECT, NULL);
             break;
         }
-        case RNWF_DHCP_DONE:
+    /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_IPV4_DONE:
         {
-            printf("DHCP IP:%s\n", &p_str[2]); 
-
+            printf("\n\rDHCP IPv4: %s\n\r", &p_str[2]);
             break;       
+        }
+    /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_LINK_LOCAL_IPV6_DONE:
+        {
+            printf("\n\rDHCP link-local IPv6:%s\n\r", &p_str[2]);
+            break;
+        }
+    /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_GLOBAL_IPV6_DONE:
+        {
+            printf("\n\rDHCP global IPv6:%s\n\r", &p_str[2]);
+            break;
+        }
+    /* feature additions from FW v2.0.0*/    
+        case RNWF_SET_REGDOM:
+        {
+            RNWF_WIFI_SrvCtrl(RNWF_SET_WIFI_REGDOM, (void *)COUNTRY_CODE);
+            break;
         }
         case RNWF_SCAN_INDICATION:
         {
             break;
         }
         case RNWF_SCAN_DONE:
+        {
+            break;
+        }
+        case RNWF_CONNECT_FAILED:
         {
             break;
         }
@@ -83,6 +119,13 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
     }
 }
 
+/**
+ * @ingroup rnwf_app
+ * @brief Wi-fi provisioning callback function for provisioning events
+ * @param[in] event         Provisioning event
+ * @param[in] p_str         string pointer
+ * @return None
+ */
 void APP_PROV_Callback(RNWF_PROV_EVENT_t event, uint8_t *p_str)
 {
     switch(event)
@@ -104,14 +147,14 @@ void APP_PROV_Callback(RNWF_PROV_EVENT_t event, uint8_t *p_str)
 }
 
 void RNWF_APP_Initialize(void)
-{    
-
- 
-
+{
+/* feature additions from FW v2.0.0*/
+    // Disable NTP Client
+        RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_RMV_SNTP, NULL);
+        RNWF_WIFI_SrvCtrl(RNWF_GET_WIFI_REGDOM, appBuffer);
     /* RNWF Application Callback register */
-    RNWF_PROV_SrvCtrl(RNWF_PROV_ENABLE, NULL);                 
-    RNWF_PROV_SrvCtrl(RNWF_PROV_SET_CALLBACK, (void *)APP_PROV_Callback);
-
+        RNWF_PROV_SrvCtrl(RNWF_PROV_ENABLE, NULL);                 
+        RNWF_PROV_SrvCtrl(RNWF_PROV_SET_CALLBACK, (void *)APP_PROV_Callback);
 
     while(1)
     {  

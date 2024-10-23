@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * MQTT Service header file
  * 
  * @file rnwf_mqtt_service.h
  * 
- * @defgroup 
+ * @defgroup mqtt_service MQTT Service 
  *
- * @ingroup
- * 
- * @brief 
+ * @brief This header file contains data types for MQTT Service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -38,7 +36,6 @@
 This page is for advanced users.
 */
 
-
 // This is a guard condition so that contents of this file are not included
 // more than once.  
 #ifndef XC_MQTT_SERVICE_H
@@ -46,13 +43,13 @@ This page is for advanced users.
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-// TODO Insert appropriate #include <>
 
-// TODO Insert C++ class definitions if appropriate
+#define RNWF_MQTT_DEBUG     1
 
-// TODO Insert declarations
-
-#define DBG_MSG_MQTT(args, ...)      printf("[MQTT]:"args, ##__VA_ARGS__)
+#ifdef RNWF_MQTT_DEBUG
+    #define DBG_MSG_MQTT(args, ...)      printf("[MQTT]:"args, ##__VA_ARGS__)
+#endif
+ 
 
 /* MQTT Configuration Commands */
 #define RNWF_MQTT_SET_BROKER_URL    "AT+MQTTC=1,\"%s\"\r\n"
@@ -100,15 +97,12 @@ This page is for advanced users.
 
 
 #define RNWF_MQTT_SERVICE_CB_MAX        2
-/**
- @defgroup MQTT_GRP MQTT Cloud API
- @{
- */
 
 /**
- @brief Network and Socket service List
- 
- */
+ * @ingroup mqtt_service
+ * @brief   MQTT service status enum
+ * @enum    RNWF_MQTT_SERVICE_t
+*/
 typedef enum 
 {
     RNWF_MQTT_CONFIG,               /**<Configure the MQTT Broker parameters*/
@@ -125,23 +119,26 @@ typedef enum
 
 
 /**
- @brief MQTT Application callback events
- 
- */
+ * @ingroup mqtt_service
+ * @brief   MQTT Application callback events
+ * @enum    RNWF_MQTT_EVENT_t
+*/
 typedef enum
 {
     RNWF_MQTT_CONNECTED,    /**<Connected to MQTT broker event */
     RNWF_MQTT_DISCONNECTED, /**<Disconnected from MQTT broker event*/   
     RNWF_MQTT_SUBCRIBE_MSG,  /**<Event to report received MQTT message*/   
     RNWF_MQTT_SUBCRIBE_ACK,
-    RNWF_MQTT_PUBLIC_ACK,     
-    RNWF_MQTT_DPS_STATUS,       
+    RNWF_MQTT_PUBLIC_ACK,
+   
+  
 }RNWF_MQTT_EVENT_t;
 
 /**
- @brief Network and Socket service List
- 
- */
+ * @ingroup     mqtt_service
+ * @brief       MQTT message configuration
+ * @struct      RNWF_MQTT_CFG_t
+*/
 typedef struct 
 {    
     const char *url;            /**<MQTT Broker/Server URL */    
@@ -151,13 +148,14 @@ typedef struct
     uint16_t port;              /**<MQTT Broker/Server Port */
     uint8_t     tls_idx;
     uint8_t     azure_dps;
-    uint8_t     *tls_conf;    
+    uint8_t     *tls_conf;
 }RNWF_MQTT_CFG_t;
 
 /**
- @brief Network and Socket service List
- 
- */
+ * @ingroup mqtt_service
+ * @brief   MQTT message
+ * @enum    RNWF_MQTT_MSG_t
+*/
 typedef enum
 {
     NEW_MSG,        /**New message*/ 
@@ -165,9 +163,10 @@ typedef enum
 }RNWF_MQTT_MSG_t;
 
 /**
- @brief MQTT Message QoS Type
- 
- */
+ * @ingroup mqtt_service
+ * @brief MQTT Message QoS Type
+ * @enum RNWF_MQTT_QOS_t
+*/
 typedef enum
 {
     MQTT_QOS0,      /**<No-Ack, Best effort delivery(No Guarantee)*/          
@@ -176,9 +175,10 @@ typedef enum
 }RNWF_MQTT_QOS_t;
 
 /**
- @brief MQTT Message Retain flag
- 
- */
+ * @ingroup mqtt_service
+ * @brief   MQTT Message Retain flag
+ * @enum    RNWF_MQTT_RETAIN_t
+*/
 typedef enum
 {
     NO_RETAIN,          /**<Publish message is not saved at broker */
@@ -186,42 +186,46 @@ typedef enum
 }RNWF_MQTT_RETAIN_t;
 
 /**
- @brief MQTT Publish Frame format
- 
- */
+ * @ingroup mqtt_service
+ * @brief MQTT Publish frame format
+ * @struct RNWF_MQTT_FRAME_t
+*/
 typedef struct
 {
     RNWF_MQTT_MSG_t isNew;          /**<Indicates message is new or duplicate */
-    RNWF_MQTT_QOS_t qos;            /**<QoS type for the message ::RNWF_MQTT_QOS_t */
+    RNWF_MQTT_QOS_t qos;            /**<QoS type for the message of type RNWF_MQTT_QOS_t */
     RNWF_MQTT_RETAIN_t isRetain;    /**<Retain flag for the publish message */
-    const char *topic;           /**<Publish topic for the message */
-    const char *message;         /**<Indicates message is new or duplicate */               
+    const char *topic;              /**<Publish topic for the message */
+    const char *message;            /**<Indicates message is new or duplicate */               
 }RNWF_MQTT_FRAME_t;
 
 
 /**
- @brief MQTT Callback Function definition
- 
- */
+ * @ingroup     mqtt_service
+ * @brief       MQTT Callback Function definition
+ * @param[in]   RNWF_MQTT_EVENT_t MQTT callback event
+ * @param[in]   input parameter for service
+ * @retval      RNWF_PASS Requested service handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 typedef RNWF_RESULT_t (*RNWF_MQTT_CALLBACK_t)(RNWF_MQTT_EVENT_t, uint8_t *);
 
 
 /**
- @brief MQTT Callback Function handler
- 
- */
+ * @ingroup mqtt_service
+ * @brief MQTT Callback Function handler
+ * @var gMqtt_CallBack_Handler stores MQTT callbacks
+*/
 extern RNWF_MQTT_CALLBACK_t gMqtt_CallBack_Handler[RNWF_MQTT_SERVICE_CB_MAX];
 
 /**
- * @brief MQTT Service Layer API to handle system operations.
- * 
- *
- * @param[in] request       Requested service ::RNWF_MQTT_SERVICE_t
- * @param[in] input         Input/Output data for the requested service 
- * 
- * @return RNWF_PASS Requested service is handled successfully
- * @return RNWF_PASS Requested service has failed
- */
+ * @ingroup     mqtt_service
+ * @brief       MQTT Service Layer API to handle system operations.
+ * @param[in]   request       Requested service of type RNWF_MQTT_SERVICE_t
+ * @param[in]   input         Input/Output data for the requested service 
+ * @retval      RNWF_PASS Requested service is handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 RNWF_RESULT_t RNWF_MQTT_SrvCtrl( RNWF_MQTT_SERVICE_t request, void *input);
 
 #endif	/* XC_HEADER_TEMPLATE_H */

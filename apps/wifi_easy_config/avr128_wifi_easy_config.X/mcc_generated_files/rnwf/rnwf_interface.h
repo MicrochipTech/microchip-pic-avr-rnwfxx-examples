@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * INF Service header file
  * 
  * @file rnwf_interface.h
  * 
- * @defgroup 
+ * @defgroup rnwf_interface Wi-Fi Interface
  *
- * @ingroup
- * 
- * @brief 
+ * @brief This header file contains data types for interface
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -44,11 +42,11 @@
 
 
 #define DBG_MSG_IF(args, ...)    printf("[IF]:"args, ##__VA_ARGS__)
-
 /**
- @brief RNWF Return Values
- 
- */
+ * @ingroup rnwf_interface
+ * @brief RNWF Return Values
+ * @enum RNWF_RESULT_t
+*/
 typedef enum
 {      
     RNWF_PASS =  0x0000,     /**<Success*/
@@ -59,6 +57,11 @@ typedef enum
     RNWF_TIMEOUT = -5,  /**<Timeout*/                 
 }RNWF_RESULT_t;
 
+/**
+ * @ingroup rnwf_interface
+ * @brief   RNWF interface states
+ * @enum    RNWF_INTERFACE_STATE_t
+*/
 typedef enum
 {           
     RNWF_INTERFACE_FREE,
@@ -67,10 +70,13 @@ typedef enum
 
 extern const uart_drv_interface_t UART2;
 
-// TODO Insert appropriate #include <>
 
 
-#ifdef MQTT_APP
+/* feature additions from FW v2.0.0*/
+#define MOBILE_APP_PROV
+ 
+
+#if defined(MQTT_APP) || defined(MOBILE_APP_PROV)
 #define RNWF_INTERFACE_LEN_MAX    1024
 
 #define RNWF_IF_ASYCN_MSG_MAX  (512+256)
@@ -89,12 +95,13 @@ extern RNWF_INTERFACE_STATE_t   g_interface_state;
 extern uint32_t   g_interface_timeout;
 
 
-// TODO Insert C++ class definitions if appropriate
 
-// TODO Insert declarations
 #define RNWF_INTERFACE_TIMEOUT      0x7FFFF
 
-//#define RNWF_INTERFACE_DEBUG        1
+#define RNWF_INTERFACE_DEBUG        1
+ 
+
+ 
 
 #define RNWF_IS_INTERFACE_BUSY()      if(g_interface_state == RNWF_INTERFACE_BUSY){printf("IF Busy\n");return RNWF_INTERFACE_BUSY;}
 #define RNWF_SET_INTERFACE_BUSY()     (g_interface_state = RNWF_INTERFACE_BUSY)             
@@ -126,6 +133,15 @@ extern uint32_t   g_interface_timeout;
 #define RNWF_EVENT_DNS_RESOLVE    "DNSRESOLV:"
 #define RNWF_EVENT_DNS_ERROR      "DNSERR:"
 
+/* feature addition from FW v2.0.0*/
+/* Regulatory Domain Event Code */
+#define RNWF_EVENT_GET_REGDOM     "WIFIC:"
+
+/* PING Event Codes */
+#define RNWF_EVENT_PING_FAILURE     "PINGERR:"
+#define RNWF_EVENT_PING_SUCCESS     "PING:"
+ 
+
 /*  TIME Event Code */
 #define RNWF_EVENT_TIME             "TIME:"
 
@@ -152,9 +168,11 @@ extern uint32_t   g_interface_timeout;
 #define RNWF_EVENT_MQTT_PROP_RX     "MQTTPROPRX:"
 #define RNWF_EVENT_MQTT_SUB_MSG     "MQTTSUBRX:"
 
-
-
-
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Buffer queue
+ * @struct      IF_QUEUE_t
+*/
 typedef struct {
         int8_t    head; 
         int8_t    tail;             
@@ -162,31 +180,18 @@ typedef struct {
         uint8_t    size;
 }IF_QUEUE_t;
 
-// Comment a function and leverage automatic documentation with slash star star
 /**
-    <p><b>Function prototype:</b></p>
-  
-    <p><b>Summary:</b></p>
-
-    <p><b>Description:</b></p>
-
-    <p><b>Precondition:</b></p>
-
-    <p><b>Parameters:</b></p>
-
-    <p><b>Returns:</b></p>
-
-    <p><b>Example:</b></p>
-    <code>
+ * @ingroup rnwf_interface
+ * @brief   DHCP IP Address type
+ * @enum    RNWF_DHCP_IP_ADD_TYPE_t
+*/
+typedef enum {
+    RNWF_IP_UNKNOWN = 1,            /**<RNWF DHCP IP address error code*/
+    RNWF_IPv4,                      /**<RNWF DHCP IP type IPv4*/
+    RNWF_LINK_LOCAL_IPv6,           /**<RNWF DHCP IP type Link-local IPv6*/
+    RNWF_GLOBAL_IPv6,               /**<RNWF DHCP IP type Global IPv6*/    
+}RNWF_DHCP_IP_ADD_TYPE_t;
  
-    </code>
-
-    <p><b>Remarks:</b></p>
- */
-// TODO Insert declarations or function prototypes (right here) to leverage 
-// live documentation
-
-
 
 #define IF_BUF_Q_ENQUEUE(frameIdx)   if_q_enqueue(&g_if_free_q, frameIdx) 
 #define IF_BUF_Q_DEQUEUE(frameIdx)   if_q_dequeue(&g_if_free_q, frameIdx) 
@@ -194,15 +199,90 @@ typedef struct {
 #define IF_RX_Q_ENQUEUE(frameIdx)   if_q_enqueue(&g_if_rx_q, frameIdx) 
 #define IF_RX_Q_DEQUEUE(frameIdx)   if_q_dequeue(&g_if_rx_q, frameIdx) 
 
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Initializing interface buffer queue
+ * @param[in]   None
+ * @retval      RNWF_PASS Requested service handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 RNWF_RESULT_t RNWF_IF_Init(void);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Write the bytes to buffer
+ * @param[in]   buffer    Pointer to the buffer
+ * @param[in]   len       Length of the data to write
+ * @retval      RNWF_PASS Requested service handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 RNWF_RESULT_t RNWF_RAW_Write(uint8_t *buffer, uint16_t len);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Read from buffer
+ * @param[in]   buffer    Pointer to the buffer
+ * @param[in]   len       Length of the data read
+ * @return      RNWF data length that was read successfully
+ * @return      RNWF_TIMEOUT when fails to read successfully
+*/
 int16_t RNWF_RAW_Read(uint8_t *buffer, uint16_t len);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Send the command to RNWF device
+ * @param[in]   cmd_complete  AT command's response to wait for
+ * @param[in]   delimeter     delimeter
+ * @param[in]   response      AT command in form of string
+ * @param[in]   format        (optional)parameters or arguments of the AT command to send
+ * @return      RNWF response (timeout, pass or response length)
+*/
 int16_t RNWF_CMD_RSP_Send(const char *cmd_complete, const char *delimeter, uint8_t *response, const char *format, ...);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Event handler running in loop to capture asynchronous message response
+ * @param[in]   None
+ * @retval      RNWF_PASS Requested service handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 RNWF_RESULT_t RNWF_EVENT_Handler(void);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Software reset API
+ * @param[in]   None
+ * @return      RNWF return values
+*/
 RNWF_RESULT_t RNWF_IF_SW_Reset(void);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Trimming tab or null character from asynchronous response
+ * @param[in]   buffer Pointer to input buffer conatining data
+ * @retval      RNWF_PASS Requested service handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 RNWF_RESULT_t RNWF_RESPONSE_Trim(uint8_t *buffer);
 
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Write bytes to buffer
+ * @param[in]   buffer    Pointer to the buffer
+ * @param[in]   len       Length of the data to write
+ * @retval      RNWF_PASS Requested service handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 uint16_t RNWF_IF_Write(uint8_t *buffer, uint16_t len);
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Read from buffer
+ * @param[in]   buffer    Pointer to the buffer
+ * @param[in]   len       Length of the data read
+ * @retval RNWF data length that was read successfully
+ * @retval RNWF_TIMEOUT when fails to read successfully
+*/
 uint16_t RNWF_IF_Read(uint8_t *buffer, uint16_t len);
                   
 #define RNWF_CMD_SEND_OK_WAIT(delimeter, response, format, ...) RNWF_CMD_RSP_Send(RNWF_AT_DONE, delimeter, response, format, ##__VA_ARGS__)

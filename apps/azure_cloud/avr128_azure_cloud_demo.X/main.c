@@ -7,11 +7,13 @@
  * 
  * @brief This is the generated driver implementation file for the MAIN driver.
  *
- * @version MAIN Driver Version 1.0.0
+ * @version MAIN Driver Version 1.0.2
+ *
+ * @version Package Version: 3.1.2
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -49,25 +51,20 @@ void APP_RESET_Device(void)
     RSTCTRL_reset();
 }
 
-void APP_LED_Handler(void)
-{ 
-    LED_Toggle();    
-}
-
 int main(void)
 {
     SYSTEM_Initialize();
     
     PB2_SetInterruptHandler(APP_SW_Handler);
-    TCA0_Interface.TimeoutCallbackRegister(APP_SYS_Tick);     
-    TCA1_Interface.TimeoutCallbackRegister(APP_LED_Handler); 
-    
+       
     // Main Section();
     RNWF_IF_Init();
-    
+
     printf("%s", "##################################\n");
     printf("%s", "  Welcome RNWF02 Azure Cloud Demo  \n");
     printf("%s", "##################################\n");    
+    
+    TCA0_Interface.TimeoutCallbackRegister(APP_SYS_Tick); 
 
     RNWF_SYSTEM_SrvCtrl(RWWF_SYSTEM_GET_WIFI_INFO, app_buf);    
     printf("Wi-Fi Info:- \r\n%s\n", app_buf);

@@ -4,7 +4,7 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>avr128_tcp_client</name>
-            <creation-uuid>bb6b340d-2326-48d2-abae-75987df451d2</creation-uuid>
+            <creation-uuid>ae6389cf-b18a-4121-bb40-d1800bec1232</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>

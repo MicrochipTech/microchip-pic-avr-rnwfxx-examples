@@ -1,19 +1,17 @@
- /*
- * MAIN Generated Driver File
+/**
+ * Application source file
  * 
  * @file rnwf_app.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup rnwf_app
  * 
- * @brief 
+ * @brief Application file
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -35,20 +33,26 @@
 
 #include "rnwf_app.h"
 #include "rnwf_wifi_service.h"
+#include "rnwf_system_service.h"
 #include "rnwf_mqtt_service.h"
 #include "rnwf_net_service.h"
-#include "rnwf_system_service.h"
 
 /*
     Main application
 */
 
-/* Keeps the device IP address */
-static uint8_t g_DevIp[16];
+
+/* feature additions from FW v2.0.0*/
+uint8_t appBuffer[APP_BUFFER_SZ];
+
+
+/* feature addition from FW v2.0.0*/
+/* Holds IP address of the device */
+static uint8_t g_DevIp[50];
 
 /* Button Press Event */
 bool    g_ButtonPress = false;
-
+ 
 /* MQTT Connection States */
 #define MQTT_DISCONNECTED       0
 #define MQTT_CONNECTING         1
@@ -65,19 +69,19 @@ static uint16_t g_ReportRate = APP_CLOUD_REPORT_INTERVAL;
 /* Application buffer */
 uint8_t app_buf[APP_BUFFER_SIZE_MAX];
 /* MQTT Subscribe Topic Name List */
-static const char *subscribe_list[] = {"$iothub/twin/PATCH/properties/desired/#", "$iothub/methods/POST/#", "$iothub/twin/res/#", NULL, NULL};
+static const char *subscribe_list[] = {"devices/rnwf02-temp-node1/messages/devicebound/#", "$iothub/twin/res/#", "$iothub/methods/POST/#", NULL, NULL};
 static uint8_t subCnt;
 /* TLS Configuration details */
-const char *cloud_tls_cfg[] = {"DigiCertGlobalRootG2", "rnwf02_device_01", "rnwf02_device_01", 0, 0, 0};
+const char *cloud_tls_cfg[] = {"DigiCertGlobalRootG2", "rnwf02-temp-node1", "rnwf02-temp-node1", 0, "apatel.azure-devices.net", "*.azure-devices.net", true, true};
 RNWF_MQTT_CFG_t mqtt_cfg = {
-    .url = "g2-cert-dps.azure-devices-provisioning.net",
+    .url = "apatel.azure-devices.net",
     .clientid = CLIENT_ID,
-    .username = "0ne00ABD7D1/registrations/rnwf02_device_01/api-version=2019-03-31",
+    .username = "apatel.azure-devices.net/rnwf02-temp-node1/?api-version=2021-04-12",
     .password = "",
     .port = 8883,
     .tls_conf = cloud_tls_cfg,
     .tls_idx = RNWF_NET_TLS_CONFIG_2,
-    .azure_dps = 1
+    .azure_dps = 0
 };
 
 uint8_t *APP_GET_IP_Address(void)
@@ -93,7 +97,7 @@ void APP_SYS_Tick(void)
 void APP_SW_Handler(void)
 {
     static uint32_t press_ticks;    
-    if(!PB2_GetValue())
+    if(!IO_PB2_GetValue())
     {
         press_ticks = g_SysTickCount;
     }
@@ -117,6 +121,12 @@ void APP_AZURE_BUTTON_Telemetry(uint32_t press_count)
     APP_MQTT_Publish(AZURE_PUB_TELEMETRY, app_buf);
 }
 
+/**
+ * @ingroup rnwf_app
+ * @brief   Function to publish telemetry count data to Azure cloud
+ * @param[in] counter       counter value
+ * @return None
+ */
 void APP_AZURE_COUNTER_Telemetry(uint32_t counter)
 {            
     snprintf(app_buf, sizeof(app_buf), AZURE_FMT_COUNTER_TEL, counter);
@@ -124,31 +134,18 @@ void APP_AZURE_COUNTER_Telemetry(uint32_t counter)
     APP_MQTT_Publish(AZURE_PUB_TELEMETRY, app_buf);
 }
 
-void APP_LED_STATE_Handler(APP_LED_STATE_t ledState)
-{
-    printf("LED State = %d\r\n", ledState);
-    switch(ledState)
-    {
-        case APP_LED_BLINK:
-            TCA1_Interface.Start();
-            break;
-        case APP_LED_OFF:
-            TCA1_Interface.Stop();
-            LED_SetHigh();
-            break;
-        case APP_LED_ON:
-            TCA1_Interface.Stop();
-            LED_SetLow();
-            break;
-    }   
-}
-
+/**
+ * @ingroup rnwf_app
+ * @brief   Function to subscribe to topics in subscribe_list
+ * @param None
+ * @return None
+ */
 void APP_AZURE_SUBACK_Handler(void)
 {    
     if(subscribe_list[subCnt] != NULL)
     {
         sprintf(app_buf, "%s", subscribe_list[subCnt++]);
-        RNWF_MQTT_SrvCtrl(RNWF_MQTT_SUBSCRIBE_QOS0, app_buf);            
+        RNWF_MQTT_SrvCtrl(RNWF_MQTT_SUBSCRIBE_QOS0, app_buf);
     }
     else
     {        
@@ -157,44 +154,51 @@ void APP_AZURE_SUBACK_Handler(void)
     }
 }
 
+/**
+ * @ingroup rnwf_app
+ * @brief Azure task function
+ * @param None
+ * @return None
+ */
 void APP_AZURE_Task(void)
 {     
     static uint32_t press_count = 0;
     static uint32_t counter = 0;  
     /* Implement app specific Azure_Task() method here */  
     /* set periodic events for telemetry */
-    
     if(!(g_SysTickCount % APP_SYS_TICK_COUNT_1SEC))
     {            
         if(!(g_SysTickCount % g_ReportRate))
         {
-    APP_AZURE_COUNTER_Telemetry(counter++);     //this will continuously trigger telemetry action     
+            APP_AZURE_COUNTER_Telemetry(counter++);     //this will continuously trigger telemetry action
             APP_AZURE_BUTTON_Telemetry(press_count);
-}
-
+        }
         if(g_RebootDelay > 0)
         {            
             printf("Rebooting in %d seconds..\r\n", g_RebootDelay);
             g_RebootDelay--;
             if(g_RebootDelay == 0)
                 APP_RESET_Device();            
-        }                    
+        }
     }
-        
     if(g_ButtonPress)
     {        
         APP_AZURE_BUTTON_Telemetry(++press_count);
         g_ButtonPress = 0;
     }
-
     if(!subCnt && subscribe_list[subCnt] != NULL)
     {
         sprintf(app_buf, "%s", subscribe_list[subCnt++]);
         RNWF_MQTT_SrvCtrl(RNWF_MQTT_SUBSCRIBE_QOS0, app_buf);            
-    }        
-                 
+    }
 }
 
+/**
+ * @ingroup rnwf_app
+ * @brief Function that executes based on input string event
+ * @param[in] p_str         pointer to string
+ * @return None
+ */
 void APP_AZURE_SUB_Handler(char *p_str)
 {
     char *end_ptr = NULL;
@@ -225,7 +229,7 @@ void APP_AZURE_SUB_Handler(char *p_str)
                 printf("Reboot delay = %d Sec\r\n", g_RebootDelay);
                 sprintf(app_buf+pubLen, AZURE_FMT_DELAY_RSP, g_RebootDelay);                
                 APP_MQTT_Publish(app_buf, app_buf+pubLen);
-    }
+            }
             if(echo_ptr != NULL)
             {                 
                 echo_ptr += strlen(AZURE_ECHO_TAG);
@@ -237,40 +241,11 @@ void APP_AZURE_SUB_Handler(char *p_str)
             }
         }  
     }
-    if(strstr(p_str, "desired"))
-    {
-        /* Complete app-specific implementation here */
-        ver_ptr = strstr(p_str, AZURE_VERSION_TAG);                
-        led_ptr = strstr(p_str, AZURE_LED0_TAG);  
-        rate_ptr = strstr(p_str, AZURE_RATE_TAG);
-        
-        if(ver_ptr != NULL)
-        {
-            ver_ptr += +strlen(AZURE_VERSION_TAG); 
-            end_ptr = (char *)strstr(ver_ptr, "}");
-            *end_ptr = '\0';
-            if(led_ptr != NULL)
-            {
-                led_ptr += strlen(AZURE_LED0_TAG);
-                end_ptr = (char *)strstr(led_ptr, " \\");
-                *end_ptr = '\0';
-                sprintf(app_buf, AZURE_FMT_LED0_PROP, ver_ptr, led_ptr);                
-                APP_LED_STATE_Handler(atoi(led_ptr));                
-                APP_MQTT_Publish(AZURE_PUB_PROPERTY, app_buf);
-    }
-            if(rate_ptr != NULL)
-            {
-                rate_ptr += strlen(AZURE_RATE_TAG);
-                end_ptr = (char *)strstr(rate_ptr, " \\");
-                *end_ptr = '\0';
-                sprintf(app_buf, AZURE_FMT_RATE_PROP, ver_ptr, rate_ptr);
-                g_ReportRate = atoi(rate_ptr) * APP_SYS_TICK_COUNT_1SEC;
-                printf("Report Rate =  %d \r\n", g_ReportRate);
-                APP_MQTT_Publish(AZURE_PUB_PROPERTY, app_buf);
 }
-        }
-    }
-}
+
+
+
+
 
 RNWF_RESULT_t APP_MQTT_Publish(const char *top, const char *msg)
 {    
@@ -283,16 +258,23 @@ RNWF_RESULT_t APP_MQTT_Publish(const char *top, const char *msg)
     return RNWF_MQTT_SrvCtrl(RNWF_MQTT_PUBLISH, (void *)&mqtt_pub);              
 }     
 
+/**
+ * @ingroup rnwf_app
+ * @brief MQTT Callback function for connect, disconnect, subscribe events
+ * @param[in] event     MQTT event
+ * @param[in] p_str     string pointer
+ * @retval              RNWF_PASS Requested event is handled successfully
+ * @retval              RNWF_FAIL Requested event has failed
+ */
 RNWF_RESULT_t APP_MQTT_Callback(RNWF_MQTT_EVENT_t event, uint8_t *p_str)
 {   
-  
     switch(event)
     {
         case RNWF_MQTT_CONNECTED:
-        {                        
+        {
+            printf("\n\rMQTT Connected\r\n");
+            DBG_MSG_MQTT("Azure IoT-Hub Connection Successful!\r\n");
             g_isMqttConnected = MQTT_CONNECTED;
-            TCA1_Interface.Stop();
-            LED_SetLow();
         }
         break;
         case RNWF_MQTT_SUBCRIBE_ACK:
@@ -302,31 +284,16 @@ RNWF_RESULT_t APP_MQTT_Callback(RNWF_MQTT_EVENT_t event, uint8_t *p_str)
         break;
         case RNWF_MQTT_SUBCRIBE_MSG:
         {
-//            printf("RNWF02 <- %s\r\n", p_str);
+            printf("RNWF02 <- %s\r\n", p_str);
             CLOUD_SUBMSG_HANDLER(p_str);
         }
         break;
         case RNWF_MQTT_DISCONNECTED:
-        {            
-            TCA1_Interface.Start();
+        {
             printf("MQTT - Reconnecting...\r\n"); 
             g_isMqttConnected = MQTT_DISCONNECTED;          
             RNWF_MQTT_SrvCtrl(RNWF_MQTT_CONNECT, NULL);
             g_isMqttConnected = MQTT_CONNECTING;         
-        }
-        break;
-        case RNWF_MQTT_DPS_STATUS:
-        {
-            if(*p_str == 1)
-            {
-                printf("DPS Successful! Connecting to Azure IoT Hub\r\n");
-            }
-            else
-            {   
-                RNWF_MQTT_SrvCtrl(RNWF_MQTT_CONFIG, (void *)&mqtt_cfg);                                                           
-            }
-            RNWF_MQTT_SrvCtrl(RNWF_MQTT_CONNECT, NULL);   
-            g_isMqttConnected = MQTT_CONNECTING;             
         }
         break;
         default:
@@ -336,16 +303,22 @@ RNWF_RESULT_t APP_MQTT_Callback(RNWF_MQTT_EVENT_t event, uint8_t *p_str)
 }   
 
 
+/**
+ * @ingroup rnwf_app
+ * @brief Wi-Fi callback function for Wi-Fi events like scan, SNTP, DHCP
+ * @param[in] event         Wi-Fi event type
+ * @param[in] p_str         string pointer
+ * @return None
+ */
 void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
 {
     switch(event)
     {
         case RNWF_SNTP_UP:
-        {            
+        {   
             if(g_isMqttConnected < MQTT_CONNECTING)
             {            
-                printf("SNTP UP:%s\n", &p_str[2]);             
-                TCA1_Interface.PeriodCountSet(APP_LED_TCA1_PER_TICK<<1); 
+                printf("SNTP UP:%s\n", &p_str[2]);
                 printf("Connecting to the Cloud\r\n");
                 RNWF_MQTT_SrvCtrl(RNWF_MQTT_SET_CALLBACK, APP_MQTT_Callback);
                 RNWF_MQTT_SrvCtrl(RNWF_MQTT_CONFIG, (void *)&mqtt_cfg);
@@ -361,23 +334,43 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
         }
         case RNWF_DISCONNECTED:
         {
-            TCA1_Interface.PeriodCountSet(APP_LED_TCA1_PER_TICK);
-            TCA1_Interface.Start();
             printf("Wi-Fi Disconnected\nReconnecting... \n");
             RNWF_WIFI_SrvCtrl(RNWF_STA_CONNECT, NULL);
             break;
         }
-        case RNWF_DHCP_DONE:
+    /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_IPV4_DONE:
         {
-            printf("DHCP IP:%s\n", &p_str[2]); 
-            strncpy(g_DevIp, &p_str[3], strlen(&p_str[3])-1); 
+            printf("\n\rDHCP IPv4: %s\n\r", &p_str[2]);
             break;       
+        }
+    /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_LINK_LOCAL_IPV6_DONE:
+        {
+            printf("\n\rDHCP link-local IPv6:%s\n\r", &p_str[2]);
+            break;
+        }
+    /* feature additions from FW v2.0.0*/
+        case RNWF_DHCP_GLOBAL_IPV6_DONE:
+        {
+            printf("\n\rDHCP global IPv6:%s\n\r", &p_str[2]);
+            break;
+        }
+    /* feature additions from FW v2.0.0*/    
+        case RNWF_SET_REGDOM:
+        {
+            RNWF_WIFI_SrvCtrl(RNWF_SET_WIFI_REGDOM, (void *)COUNTRY_CODE);
+            break;
         }
         case RNWF_SCAN_INDICATION:
         {
             break;
         }
         case RNWF_SCAN_DONE:
+        {
+            break;
+        }
+        case RNWF_CONNECT_FAILED:
         {
             break;
         }
@@ -390,19 +383,18 @@ void APP_WIFI_Callback(RNWF_WIFI_EVENT_t event, uint8_t *p_str)
 
 
 void RNWF_APP_Initialize(void)
-{    
-    const char sntp_url[] =  "0.in.pool.ntp.org";    
-    RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_SET_SNTP, sntp_url);           
-
- 
-    /* Wi-Fii Connectivity */
-    RNWF_WIFI_PARAM_t wifi_sta_cfg = {RNWF_WIFI_MODE_STA, HOME_AP_SSID, HOME_AP_PASSPHRASE, HOME_AP_SECURITY, 1};    
-    printf("Connecting to %s\r\n", HOME_AP_SSID);
-    RNWF_WIFI_SrvCtrl(RNWF_WIFI_SET_CALLBACK, APP_WIFI_Callback);
-    RNWF_WIFI_SrvCtrl(RNWF_SET_WIFI_PARAMS, &wifi_sta_cfg);
-
+{
+/* feature additions from FW v2.0.0*/
+    // Configure and Enable NTP Client                                        
+        const char sntp_url[] =  "216.239.35.4";    
+        RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_SET_SNTP, sntp_url);           
+        RNWF_WIFI_SrvCtrl(RNWF_GET_WIFI_REGDOM, appBuffer);
+    /* Wi-Fi Connectivity */
+        RNWF_WIFI_PARAM_t wifi_sta_cfg = {RNWF_WIFI_MODE_STA, HOME_AP_SSID, HOME_AP_PASSPHRASE, HOME_AP_SECURITY, STA_AUTOCONNECT};    
+        printf("Connecting to %s\r\n", HOME_AP_SSID);
+        RNWF_WIFI_SrvCtrl(RNWF_WIFI_SET_CALLBACK, APP_WIFI_Callback);
+        RNWF_WIFI_SrvCtrl(RNWF_SET_WIFI_PARAMS, &wifi_sta_cfg);
     /* RNWF Application Callback register */
-
 
     while(1)
     {  

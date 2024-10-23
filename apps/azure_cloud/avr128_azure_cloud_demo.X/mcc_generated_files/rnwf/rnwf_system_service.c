@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * RNWFxx System service implementation source file
  * 
  * @file rnwf_system_service.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup system_service
  * 
- * @brief 
+ * @brief This file contains APIs and data types for System service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* This section lists the other files that are included in this file.
@@ -65,7 +57,6 @@ easy and quick applciation development.
 /* ************************************************************************** */
 /* ************************************************************************** */
 
-
 /* ************************************************************************** */
 /* ************************************************************************** */
 // Section: Local Functions                                                   */
@@ -82,12 +73,6 @@ RNWF_RESULT_t RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_SERVICE_t request, void *input) {
             result = RNWF_CMD_SEND_OK_WAIT(NULL, init_msg, RNWF_RESET_TARGET);
         }
         break;
-#ifdef RNWF11_SERVICE
-        case RNWF_SYSTEM_TBL:
-        {
-            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_TRIGGER_BOOTLOADER);
-        }
-#endif        
         case RNWF_SYSTEM_ECHO_OFF:
         {
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_ECHO_OFF);
@@ -148,13 +133,21 @@ RNWF_RESULT_t RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_SERVICE_t request, void *input) {
             result = RNWF_CMD_SEND_OK_WAIT("+NETIFC:", input, RNWF_GET_WIFI_IFNO);
         }
         break;
+ 
         case RNWF_SYSTEM_SET_SNTP:
-        {            
+        {         
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_SNTP_STATIC, input);
-            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_SNTP_URL, input);
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_SNTP_SVR_ADDR, input);
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_SNTP_ENBL, input);
         }
         break;
+        case RNWF_SYSTEM_SET_DNS:
+        {
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_DNS_TIMEOUT, 5000);
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_DNS_AUTO, NULL);
+        }
+        break;
+         
         case RNWF_SYSTEM_GET_MQTT_INFO:
         {            
             *(uint8_t*)input = '\0';
@@ -166,6 +159,7 @@ RNWF_RESULT_t RNWF_SYSTEM_SrvCtrl(RNWF_SYSTEM_SERVICE_t request, void *input) {
     }
     return result;
 }
+
 /* *****************************************************************************
  End of File
  */

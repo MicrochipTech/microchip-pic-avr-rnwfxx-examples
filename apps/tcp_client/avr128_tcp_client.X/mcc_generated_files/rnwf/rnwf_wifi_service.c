@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * Wi-Fi service implementation source file
  * 
  * @file rnwf_wifi_service.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup wifi_service
  * 
- * @brief 
+ * @brief This file contains APIs and data types for Wifi service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* This section lists the other files that are included in this file.
@@ -55,6 +47,9 @@ easy and quick applciation development.
 
 #include "rnwf_interface.h"
 #include "rnwf_wifi_service.h"
+/* feature addition from FW v2.0.0*/
+#include "rnwf_app.h"
+ 
 
 /* This section lists the other files that are included in this file.
  */
@@ -90,26 +85,24 @@ RNWF_RESULT_t RNWF_WIFI_SrvCtrl( RNWF_WIFI_SERVICE_t request, void *input)  {
         case RNWF_AP_DISABLE:
         {
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SOFTAP_DISABLE); 
-        }
-        break;            
-            
-        case RNWF_SET_WIFI_AP_CHANNEL:
-        {            
-            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_AP_CHANNEL, *(uint8_t *)input);            
             break;
-        }          
+        }
         case RNWF_SET_WIFI_BSSID:
         {            
-            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_AP_CHANNEL, (uint8_t *)input);            
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_STA_BSSID, (uint8_t *)input);            
             break;
         } 
+        case RNWF_SET_WIFI_AP_CHANNEL:
+        {          
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_AP_CHANNEL, *(uint8_t *)input); 
+            break;
+        }
         case RNWF_SET_WIFI_TIMEOUT:
-            break;
-        case RNWF_SET_WIFI_HIDDEN:
         {            
-            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_AP_HIDDEN, *(uint8_t *)input);            
+            uint32_t toVal = *(uint32_t *)input;
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_STA_TIMEOUT, toVal);            
             break;
-        }   
+        } 
         case RNWF_SET_WIFI_PARAMS:  
         {
             RNWF_WIFI_PARAM_t *wifi_config = (RNWF_WIFI_PARAM_t *)input;
@@ -120,7 +113,7 @@ RNWF_RESULT_t RNWF_WIFI_SrvCtrl( RNWF_WIFI_SERVICE_t request, void *input)  {
                 result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_DISCONNECT);
                 result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_STA_SSID, wifi_config->ssid);            
                 result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_STA_PWD, wifi_config->passphrase);
-                result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_STA_SEC, wifi_config->security);
+                result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_STA_SEC, wifi_config->security);    
                 if(wifi_config->autoconnect)
                 {
                     result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_CONNECT);
@@ -142,18 +135,65 @@ RNWF_RESULT_t RNWF_WIFI_SrvCtrl( RNWF_WIFI_SERVICE_t request, void *input)  {
             }
             break;            
         }
+        case RNWF_GET_WIFI_REGDOM:
+        {
+            *(uint8_t*)input = '\0';
+            result = RNWF_CMD_SEND_OK_WAIT("+WIFIC:", input, RNWF_WIFI_GET_REGULATORY_DOMAIN);
+            break;
+        }
+        case RNWF_SET_WIFI_REGDOM:
+        {
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_REGULATORY_DOMAIN, (const char*)input);
+            break;
+        }
+    #ifdef WIFI_BT_COEX_ENABLE
+        case RNWF_WIFI_SET_COEX:
+        {
+            RNWF_WIFI_BT_COEX_t *wifibtCoex = (RNWF_WIFI_BT_COEX_t *)input;
+            if(wifibtCoex != NULL)
+            {
+                if(wifibtCoex->isCoExEnabled)
+                {
+                    result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_BT_INTF_TYPE, wifibtCoex->interfaceType);
+                    result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_BT_WLAN_RX_PRI, wifibtCoex->isWlanRxPrio);
+                    result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_BT_WLAN_TX_PRI, wifibtCoex->isWlanTxPrio);
+                    result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_BT_ANTENNA_MODE, wifibtCoex->antennaMode);
+                    result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_WIFI_BT_COEX, wifibtCoex->isCoExEnabled);
+                }
+            }
+            break;
+        }
+    #endif
+    #ifdef POWERSAVE_ENABLE
+        case RNWF_SET_WIFI_PSM:
+        {
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_WIFI_PWRSV);
+            break;
+        }
+    #endif
+    #ifdef PING_ENABLE
+        case RNWF_WIFI_PING_ENBL:
+        {
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_SET_WIFI_PING_ON, (const char*)input);
+        }
+        break;
+    #endif
+ 
+        case RNWF_SET_WIFI_HIDDEN:
+        {            
+            result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_SET_AP_HIDDEN, *(uint8_t *)input);            
+            break;
+        }
         case RNWF_WIFI_PASSIVE_SCAN:
         {
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_PSV_SCAN);
-        }
-        break;    
-            
+            break;
+        }    
         case RNWF_WIFI_ACTIVE_SCAN:
         {
             result = RNWF_CMD_SEND_OK_WAIT(NULL, NULL, RNWF_WIFI_ACT_SCAN);
-        }
-        break;            
-            
+            break;
+        }            
         case RNWF_WIFI_SET_CALLBACK:  
         {
             gWifi_CallBack_Handler[1] = (RNWF_WIFI_CALLBACK_t)input;                        
@@ -168,7 +208,6 @@ RNWF_RESULT_t RNWF_WIFI_SrvCtrl( RNWF_WIFI_SERVICE_t request, void *input)  {
         default:
             result = RNWF_FAIL;
             break;
-            
     };    
     
     return result;

@@ -12,7 +12,7 @@
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -34,30 +34,30 @@
 
 #include "../pins.h"
 
-static void (*PF5_InterruptHandler)(void);
-static void (*PF4_InterruptHandler)(void);
-static void (*PB1_InterruptHandler)(void);
-static void (*PB0_InterruptHandler)(void);
-static void (*PB2_InterruptHandler)(void);
-static void (*LED_InterruptHandler)(void);
+static void (*IO_PF5_InterruptHandler)(void);
+static void (*IO_PF4_InterruptHandler)(void);
+static void (*IO_PB1_InterruptHandler)(void);
+static void (*IO_PB0_InterruptHandler)(void);
+static void (*IO_PB2_InterruptHandler)(void);
 
 void PIN_MANAGER_Initialize()
 {
-  /* DIR Registers Initialization */
-    PORTA.DIR = 0x0;
-    PORTB.DIR = 0x9;
-    PORTC.DIR = 0x0;
-    PORTD.DIR = 0x0;
-    PORTE.DIR = 0x0;
-    PORTF.DIR = 0x10;
 
   /* OUT Registers Initialization */
     PORTA.OUT = 0x0;
-    PORTB.OUT = 0xD;
+    PORTB.OUT = 0x5;
     PORTC.OUT = 0x0;
     PORTD.OUT = 0x0;
     PORTE.OUT = 0x0;
     PORTF.OUT = 0x10;
+
+  /* DIR Registers Initialization */
+    PORTA.DIR = 0x0;
+    PORTB.DIR = 0x1;
+    PORTC.DIR = 0x0;
+    PORTD.DIR = 0x0;
+    PORTE.DIR = 0x0;
+    PORTF.DIR = 0x10;
 
   /* PINxCTRL registers Initialization */
     PORTA.PIN0CTRL = 0x0;
@@ -71,7 +71,7 @@ void PIN_MANAGER_Initialize()
     PORTB.PIN0CTRL = 0x0;
     PORTB.PIN1CTRL = 0x0;
     PORTB.PIN2CTRL = 0x9;
-    PORTB.PIN3CTRL = 0x8;
+    PORTB.PIN3CTRL = 0x0;
     PORTB.PIN4CTRL = 0x0;
     PORTB.PIN5CTRL = 0x0;
     PORTB.PIN6CTRL = 0x0;
@@ -109,8 +109,6 @@ void PIN_MANAGER_Initialize()
     PORTF.PIN6CTRL = 0x0;
     PORTF.PIN7CTRL = 0x0;
 
-  /* EVGENCTRL registers Initialization */
-
   /* PORTMUX Initialization */
     PORTMUX.ACROUTEA = 0x0;
     PORTMUX.CCLROUTEA = 0x0;
@@ -125,91 +123,77 @@ void PIN_MANAGER_Initialize()
     PORTMUX.ZCDROUTEA = 0x0;
 
   // register default ISC callback functions at runtime; use these methods to register a custom function
-    PF5_SetInterruptHandler(PF5_DefaultInterruptHandler);
-    PF4_SetInterruptHandler(PF4_DefaultInterruptHandler);
-    PB1_SetInterruptHandler(PB1_DefaultInterruptHandler);
-    PB0_SetInterruptHandler(PB0_DefaultInterruptHandler);
-    PB2_SetInterruptHandler(PB2_DefaultInterruptHandler);
-    LED_SetInterruptHandler(LED_DefaultInterruptHandler);
+    IO_PF5_SetInterruptHandler(IO_PF5_DefaultInterruptHandler);
+    IO_PF4_SetInterruptHandler(IO_PF4_DefaultInterruptHandler);
+    IO_PB1_SetInterruptHandler(IO_PB1_DefaultInterruptHandler);
+    IO_PB0_SetInterruptHandler(IO_PB0_DefaultInterruptHandler);
+    IO_PB2_SetInterruptHandler(IO_PB2_DefaultInterruptHandler);
 }
 
 /**
-  Allows selecting an interrupt handler for PF5 at application runtime
+  Allows selecting an interrupt handler for IO_PF5 at application runtime
 */
-void PF5_SetInterruptHandler(void (* interruptHandler)(void)) 
+void IO_PF5_SetInterruptHandler(void (* interruptHandler)(void)) 
 {
-    PF5_InterruptHandler = interruptHandler;
+    IO_PF5_InterruptHandler = interruptHandler;
 }
 
-void PF5_DefaultInterruptHandler(void)
+void IO_PF5_DefaultInterruptHandler(void)
 {
-    // add your PF5 interrupt custom code
-    // or set custom function using PF5_SetInterruptHandler()
+    // add your IO_PF5 interrupt custom code
+    // or set custom function using IO_PF5_SetInterruptHandler()
 }
 /**
-  Allows selecting an interrupt handler for PF4 at application runtime
+  Allows selecting an interrupt handler for IO_PF4 at application runtime
 */
-void PF4_SetInterruptHandler(void (* interruptHandler)(void)) 
+void IO_PF4_SetInterruptHandler(void (* interruptHandler)(void)) 
 {
-    PF4_InterruptHandler = interruptHandler;
+    IO_PF4_InterruptHandler = interruptHandler;
 }
 
-void PF4_DefaultInterruptHandler(void)
+void IO_PF4_DefaultInterruptHandler(void)
 {
-    // add your PF4 interrupt custom code
-    // or set custom function using PF4_SetInterruptHandler()
+    // add your IO_PF4 interrupt custom code
+    // or set custom function using IO_PF4_SetInterruptHandler()
 }
 /**
-  Allows selecting an interrupt handler for PB1 at application runtime
+  Allows selecting an interrupt handler for IO_PB1 at application runtime
 */
-void PB1_SetInterruptHandler(void (* interruptHandler)(void)) 
+void IO_PB1_SetInterruptHandler(void (* interruptHandler)(void)) 
 {
-    PB1_InterruptHandler = interruptHandler;
+    IO_PB1_InterruptHandler = interruptHandler;
 }
 
-void PB1_DefaultInterruptHandler(void)
+void IO_PB1_DefaultInterruptHandler(void)
 {
-    // add your PB1 interrupt custom code
-    // or set custom function using PB1_SetInterruptHandler()
+    // add your IO_PB1 interrupt custom code
+    // or set custom function using IO_PB1_SetInterruptHandler()
 }
 /**
-  Allows selecting an interrupt handler for PB0 at application runtime
+  Allows selecting an interrupt handler for IO_PB0 at application runtime
 */
-void PB0_SetInterruptHandler(void (* interruptHandler)(void)) 
+void IO_PB0_SetInterruptHandler(void (* interruptHandler)(void)) 
 {
-    PB0_InterruptHandler = interruptHandler;
+    IO_PB0_InterruptHandler = interruptHandler;
 }
 
-void PB0_DefaultInterruptHandler(void)
+void IO_PB0_DefaultInterruptHandler(void)
 {
-    // add your PB0 interrupt custom code
-    // or set custom function using PB0_SetInterruptHandler()
+    // add your IO_PB0 interrupt custom code
+    // or set custom function using IO_PB0_SetInterruptHandler()
 }
 /**
-  Allows selecting an interrupt handler for PB2 at application runtime
+  Allows selecting an interrupt handler for IO_PB2 at application runtime
 */
-void PB2_SetInterruptHandler(void (* interruptHandler)(void)) 
+void IO_PB2_SetInterruptHandler(void (* interruptHandler)(void)) 
 {
-    PB2_InterruptHandler = interruptHandler;
+    IO_PB2_InterruptHandler = interruptHandler;
 }
 
-void PB2_DefaultInterruptHandler(void)
+void IO_PB2_DefaultInterruptHandler(void)
 {
-    // add your PB2 interrupt custom code
-    // or set custom function using PB2_SetInterruptHandler()
-}
-/**
-  Allows selecting an interrupt handler for LED at application runtime
-*/
-void LED_SetInterruptHandler(void (* interruptHandler)(void)) 
-{
-    LED_InterruptHandler = interruptHandler;
-}
-
-void LED_DefaultInterruptHandler(void)
-{
-    // add your LED interrupt custom code
-    // or set custom function using LED_SetInterruptHandler()
+    // add your IO_PB2 interrupt custom code
+    // or set custom function using IO_PB2_SetInterruptHandler()
 }
 ISR(PORTA_PORT_vect)
 { 
@@ -222,19 +206,15 @@ ISR(PORTB_PORT_vect)
     // Call the interrupt handler for the callback registered at runtime
     if(VPORTB.INTFLAGS & PORT_INT1_bm)
     {
-       PB1_InterruptHandler(); 
+       IO_PB1_InterruptHandler(); 
     }
     if(VPORTB.INTFLAGS & PORT_INT0_bm)
     {
-       PB0_InterruptHandler(); 
+       IO_PB0_InterruptHandler(); 
     }
     if(VPORTB.INTFLAGS & PORT_INT2_bm)
     {
-       PB2_InterruptHandler(); 
-    }
-    if(VPORTB.INTFLAGS & PORT_INT3_bm)
-    {
-       LED_InterruptHandler(); 
+       IO_PB2_InterruptHandler(); 
     }
     /* Clear interrupt flags */
     VPORTB.INTFLAGS = 0xff;
@@ -263,11 +243,11 @@ ISR(PORTF_PORT_vect)
     // Call the interrupt handler for the callback registered at runtime
     if(VPORTF.INTFLAGS & PORT_INT5_bm)
     {
-       PF5_InterruptHandler(); 
+       IO_PF5_InterruptHandler(); 
     }
     if(VPORTF.INTFLAGS & PORT_INT4_bm)
     {
-       PF4_InterruptHandler(); 
+       IO_PF4_InterruptHandler(); 
     }
     /* Clear interrupt flags */
     VPORTF.INTFLAGS = 0xff;

@@ -12,7 +12,7 @@
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -47,13 +47,6 @@ static void (*CE_InterruptHandler)(void);
 
 void PIN_MANAGER_Initialize()
 {
-  /* DIR Registers Initialization */
-    PORTA.DIR = 0xD0;
-    PORTB.DIR = 0x1;
-    PORTC.DIR = 0x0;
-    PORTD.DIR = 0x0;
-    PORTE.DIR = 0x0;
-    PORTF.DIR = 0x10;
 
   /* OUT Registers Initialization */
     PORTA.OUT = 0x0;
@@ -62,6 +55,14 @@ void PIN_MANAGER_Initialize()
     PORTD.OUT = 0x0;
     PORTE.OUT = 0x0;
     PORTF.OUT = 0x10;
+
+  /* DIR Registers Initialization */
+    PORTA.DIR = 0xD0;
+    PORTB.DIR = 0x1;
+    PORTC.DIR = 0x0;
+    PORTD.DIR = 0x0;
+    PORTE.DIR = 0x0;
+    PORTF.DIR = 0x10;
 
   /* PINxCTRL registers Initialization */
     PORTA.PIN0CTRL = 0x0;
@@ -112,8 +113,6 @@ void PIN_MANAGER_Initialize()
     PORTF.PIN5CTRL = 0x0;
     PORTF.PIN6CTRL = 0x0;
     PORTF.PIN7CTRL = 0x0;
-
-  /* EVGENCTRL registers Initialization */
 
   /* PORTMUX Initialization */
     PORTMUX.ACROUTEA = 0x0;

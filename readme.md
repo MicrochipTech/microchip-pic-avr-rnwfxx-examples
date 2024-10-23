@@ -5,7 +5,7 @@
 
 These are 8-bit Host MCU example applications to demonstrate the RNWFxx feautures and capabilities. These examples are based on the [Microchip's MCC Melody](https://www.microchip.com/en-us/tools-resources/configure/mplab-code-configurator/melody) infrastructure and enables the user to configure the project through a Graphical User Interface(GUI). 
 
-More details are available in the [RNWFxx Applicaiton Developer's Guide](https://onlinedocs.microchip.com/oxy/GUID-D0CB3D06-2ABE-4892-963E-65CAE080D507-en-US-1/index.html)
+More details are available in the [RNWFxx Applicaiton Developer's Guide](https://onlinedocs.microchip.com/oxy/GUID-92FEB3A1-C10F-47DF-BF88-C06521800526-en-US-3/index.html)
 
 There are following host examples:-
 

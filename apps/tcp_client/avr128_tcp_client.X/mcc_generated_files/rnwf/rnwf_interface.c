@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * INF Wi-Fi interface source file
  * 
  * @file rnwf_interface.c
- * 
- * @defgroup 
  *
- * @ingroup
+ * @ingroup rnwf_interface
  * 
- * @brief 
+ * @brief This file contains APIs and data types needed for Wi-Fi interface
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -40,12 +38,6 @@ command implementation in a service architecture. The
 service layer API's are documented here can enable 
 easy and quick applciation development.
 
-- \ref SERVICE_GRP "System Service"
-- \ref WIFI_GRP "Wi-Fi Service"
-- \ref WIFI_PROV_GRP "Wi-Fi Provisioning Service"
-- \ref MQTT_GRP "MQTT Service"
-- \ref NETSOCK_GRP "Network Socket Service"
-- \ref OTA_GRP "OTA Service"
 */
 
 /* ************************************************************************** */
@@ -78,27 +70,7 @@ easy and quick applciation development.
 /* ************************************************************************** */
 /* ************************************************************************** */
 
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
 
-/* ************************************************************************** */
-/** Descriptive Data Item Name
-
-  @Summary
-    Brief one-line summary of the data item.
-    
-  @Description
-    Full description, explaining the purpose and usage of data item.
-    <p>
-    Additional description in consecutive paragraphs separated by HTML 
-    paragraph breaks, as necessary.
-    <p>
-    Type "JavaDoc" in the "How Do I?" IDE toolbar for more information on tags.
-    
-  @Remarks
-    Any additional remarks
- */
 RNWF_INTERFACE_STATE_t   g_interface_state = RNWF_INTERFACE_FREE;
 
 uint32_t g_interface_timeout = RNWF_INTERFACE_TIMEOUT;
@@ -118,20 +90,15 @@ IF_QUEUE_t g_if_rx_q;
 /* ************************************************************************** */
 /* ************************************************************************** */
 
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
-
-/* ************************************************************************** */
-
 
 /* Circular Queue implementation */
 
-/*
- * 
- * @param if_q -> queue pointer
- * 
- */
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Circular queue
+ * @param[in]   if_q    queue pointer
+ * @return      None
+*/
 void if_q_init(IF_QUEUE_t *if_q)
 {
     if_q->tail = -1;
@@ -139,12 +106,13 @@ void if_q_init(IF_QUEUE_t *if_q)
     if_q->size = 0;
 }
 
-/*
- * if_q_full() -> Queue full API
- * @param if_q -> queue pointer
- * 
- * @return true/false
- */
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Queue full API
+ * @param[in]   if_q    queue pointer
+ * @retval      true    When buffer is full
+ * @retval      false   Buffer is not full
+*/
 bool if_q_full(IF_QUEUE_t *if_q)
 {
     if(if_q->size >= RNWF_IF_BUF_MAX)
@@ -153,12 +121,13 @@ bool if_q_full(IF_QUEUE_t *if_q)
     return false;
 }
 
-/*
- * if_q_empty() -> Queue empty API
- * @param if_q -> queue pointer
- * 
- * @return true/false
- */
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Queue empty API
+ * @param[in]   if_q    queue pointer
+ * @retval      true    queue is empty
+ * @retval      false   queue is not empty
+*/
 bool if_q_empty(IF_QUEUE_t *if_q)
 {
     if(if_q->size)
@@ -167,12 +136,13 @@ bool if_q_empty(IF_QUEUE_t *if_q)
     return true;
 }
 
-/*
- * if_q_enqueue() -> Queue Enqueue API
- * @param if_q -> queue pointer
- * 
- * @return true/false
- */
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Queue Enqueue API
+ * @param[in]   if_q    queue pointer
+ * @retval      false   when queue is full
+ * @retval      true    enqueue was successful
+*/
 bool if_q_enqueue(IF_QUEUE_t *if_q, uint8_t *mem_idx)
 {
 
@@ -192,12 +162,13 @@ bool if_q_enqueue(IF_QUEUE_t *if_q, uint8_t *mem_idx)
     return true;
 }
 
-/*
- * if_q_dequeue() -> Queue Dequeue API
- * @param if_q -> queue pointer
- * 
- * @return true/false
- */
+/**
+ * @ingroup     rnwf_interface
+ * @brief       if_q_dequeue()  Queue Dequeue API
+ * @param[in]   if_q      queue pointer
+ * @retval      false     if queue is empty
+ * @retval      true      dequeue successful  
+*/
 bool if_q_dequeue(IF_QUEUE_t *if_q, uint8_t **mem_idx)
 {
     if(if_q_empty(if_q))
@@ -212,49 +183,7 @@ bool if_q_dequeue(IF_QUEUE_t *if_q, uint8_t **mem_idx)
     return true;    
 }
 
-/** 
-  @Function
-    int ExampleLocalFunctionName ( int param1, int param2 ) 
 
-  @Summary
-    Brief one-line description of the function.
-
-  @Description
-    Full description, explaining the purpose and usage of the function.
-    <p>
-    Additional description in consecutive paragraphs separated by HTML 
-    paragraph breaks, as necessary.
-    <p>
-    Type "JavaDoc" in the "How Do I?" IDE toolbar for more information on tags.
-
-  @Precondition
-    List and describe any required preconditions. If there are no preconditions,
-    enter "None."
-
-  @Parameters
-    @param param1 Describe the first parameter to the function.
-    
-    @param param2 Describe the second parameter to the function.
-
-  @Returns
-    List (if feasible) and describe the return values of the function.
-    <ul>
-      <li>1   Indicates an error occurred
-      <li>0   Indicates an error did not occur
-    </ul>
-
-  @Remarks
-    Describe any special behavior not described above.
-    <p>
-    Any additional remarks.
-
-  @Example
-    @code
-    if(ExampleFunctionName(1, 2) == 0)
-    {
-        return 3;
-    }
- */
 
 RNWF_RESULT_t RNWF_IF_SW_Reset(void)
 {    
@@ -274,6 +203,55 @@ RNWF_RESULT_t RNWF_IF_SW_Reset(void)
 
 // *****************************************************************************
 
+/* feature additions from FW v2.0.0*/
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Determines type of IP address
+ * @param[in]   input   ip address string buffer
+ * @retval              RNWF_IP_UNKNOWN         IP address error code
+ * @retval              RNWF_LINK_LOCAL_IPv6    Link-local IPv6 address
+ * @retval              RNWF_GLOBAL_IPv6        Global IPv6 address
+ * @retval              RNWF_IPv4               IPv4 address
+*/
+RNWF_DHCP_IP_ADD_TYPE_t getipAddType(const char *input) {
+    uint8_t count = 0;
+    RNWF_DHCP_IP_ADD_TYPE_t type = RNWF_IP_UNKNOWN;
+    
+    if(strstr(input, "::") || (strstr(input, ":")))
+    {
+        if(strstr(input, "FE80"))
+        {
+            type = RNWF_LINK_LOCAL_IPv6;
+        }
+        else if(!(strstr(input, "FC00"))){
+            type = RNWF_GLOBAL_IPv6;
+        }   
+    } else if (strstr(input, '.')) 
+    {
+        for (uint8_t index = 0; input[index] != '\0'; index++)
+        {
+            if(input[index] == '.')
+            {
+                count++;
+            }
+        }
+        if(count == 3){
+            type = RNWF_IPv4;
+        }
+    }
+    return type;
+}
+ 
+// *****************************************************************************
+
+/**
+ * @ingroup     rnwf_interface
+ * @brief       Handles async event/message received from RNWFxx firmware and triggers respective callback functions
+ * @param[in]   p_msg   message buffer for async event/message received from RNWFxx firmware
+ * @retval              RNWF_PASS Requested event is handled successfully
+ * @retval              RNWF_FAIL Requested event has failed
+ * @retval              RNWF_COTN Requires retries
+*/
 RNWF_RESULT_t RNWF_IF_ASYNC_Handler(uint8_t *p_msg)
 {    
     uint16_t arg_len = 0;
@@ -286,17 +264,20 @@ RNWF_RESULT_t RNWF_IF_ASYNC_Handler(uint8_t *p_msg)
     RNWF_RESPONSE_Trim(p_arg);
     
 #ifdef RNWF_INTERFACE_DEBUG    
-//    DBG_MSG_IF("Async Message -> %s\n", p_msg);
-//      DBG_MSG_IF("Async Arguments-> %s\n", p_arg);
+    DBG_MSG_IF("Async Message -> %s\n", p_msg);
+    DBG_MSG_IF("Async Arguments-> %s\n", p_arg);
 #endif
     
     switch(p_msg[0])                        
     {
-        /** Wi-Fi DHCP/DNS or Net based Async Events*/
+        /** Wi-Fi DHCP/DNS, Ping or Net based Async Events*/
         case 'W':
         case 'D':
         case 'N':
         case 'T':
+    /* feature addition from FW v2.0.0*/
+        case 'P':
+     
         {            
             for(int i = 0; i < RNWF_WIFI_SERVICE_CB_MAX; i++)
             {
@@ -304,11 +285,27 @@ RNWF_RESULT_t RNWF_IF_ASYNC_Handler(uint8_t *p_msg)
                     continue;
                 
                 RNWF_WIFI_CALLBACK_t wifi_cb_func = gWifi_CallBack_Handler[i];
-
                 if(strstr((char *)p_msg, RNWF_EVENT_STA_AUTO_IP) || strstr((char *)p_msg, RNWF_EVENT_AP_AUTO_IP))
-                {                                
-                    wifi_cb_func(RNWF_DHCP_DONE, p_arg);        
-                }    
+                {               
+                    const char *ipAddStr = (const char*) &p_arg[2];
+                    RNWF_DHCP_IP_ADD_TYPE_t ipAddType = RNWF_IP_UNKNOWN;
+                    ipAddType = getipAddType(ipAddStr);
+
+                    if (ipAddType == RNWF_IPv4)
+                    {
+                        wifi_cb_func(RNWF_DHCP_IPV4_DONE, p_arg);                        
+                    }
+                    else if (ipAddType == RNWF_LINK_LOCAL_IPv6) 
+                    {
+                        wifi_cb_func(RNWF_DHCP_LINK_LOCAL_IPV6_DONE, p_arg);
+                    }
+                    else if (ipAddType == RNWF_GLOBAL_IPv6)
+                    {
+                        wifi_cb_func(RNWF_DHCP_GLOBAL_IPV6_DONE, p_arg);
+                    }
+                }
+             
+    
                 else if(strstr((char *)p_msg, RNWF_EVENT_LINK_LOSS) || strstr((char *)p_msg, RNWF_EVENT_ERROR))
                 {        
                     wifi_cb_func(RNWF_DISCONNECTED, p_arg);
@@ -321,19 +318,29 @@ RNWF_RESULT_t RNWF_IF_ASYNC_Handler(uint8_t *p_msg)
                 {                
                     wifi_cb_func(RNWF_CONNECT_FAILED, p_arg);   
                 }
-                if(strstr((char *)p_msg, RNWF_EVENT_SCAN_IND))
+                else if(strstr((char *)p_msg, RNWF_EVENT_SCAN_IND))
                 {
                     wifi_cb_func(RNWF_SCAN_INDICATION, p_arg);   
                 }
-                if(strstr((char *)p_msg, RNWF_EVENT_SCAN_DONE))
+                else if(strstr((char *)p_msg, RNWF_EVENT_SCAN_DONE))
                 {                     
                     wifi_cb_func(RNWF_SCAN_DONE, p_arg); 
                     result = RNWF_PASS;
                 }
-                if(strstr((char *)p_msg, RNWF_EVENT_TIME))
+                else if(strstr((char *)p_msg, RNWF_EVENT_TIME))
                 {
                     wifi_cb_func(RNWF_SNTP_UP, p_arg);   
                 }
+            /* feature addition from FW v2.0.0*/
+                else if(strstr((char *)p_msg, RNWF_EVENT_PING_FAILURE))
+                {
+                   wifi_cb_func(RNWF_PING_ERROR, p_arg);  
+                }
+                else if(strstr((char *)p_msg, RNWF_EVENT_PING_SUCCESS))
+                {
+                   wifi_cb_func(RNWF_PING_SUCCESS, p_arg);  
+                }
+             
             }
             break;
         }
@@ -352,7 +359,11 @@ RNWF_RESULT_t RNWF_IF_ASYNC_Handler(uint8_t *p_msg)
                     continue;
                 
                 sscanf((char *)p_arg, "%lu %*s", &socket_id);
-                                                            
+        /* feature additions from FW v2.0.0*/    
+            #ifdef RNWF_INTERFACE_DEBUG
+                DBG_MSG_IF("\n\n\n\r############ Socket ID: %lu ############\n\n\n\r", socket_id);
+            #endif      
+                                                   
                 if(strstr((char *)p_msg, RNWF_EVENT_SOCK_TLS_DONE))
                 {          
                     event = RNWF_NET_SOCK_EVENT_TLS_DONE;
@@ -504,16 +515,7 @@ RNWF_RESULT_t RNWF_EVENT_Handler(void)
         RNWF_CMD_RSP_Send(NULL, NULL, NULL, NULL);
     return RNWF_PASS;
 }
-/** 
-  @Function
-    int ExampleInterfaceFunctionName ( int param1, int param2 ) 
 
-  @Summary
-    Brief one-line description of the function.
-
-  @Remarks
-    Refer to the example_file.h interface header for function usage details.
- */
 int16_t RNWF_CMD_RSP_Send(const char *cmd_complete, const char *delimeter, uint8_t *response, const char *format, ...)
 {
     static uint8_t g_if_buffer[RNWF_INTERFACE_LEN_MAX];
@@ -568,14 +570,17 @@ int16_t RNWF_CMD_RSP_Send(const char *cmd_complete, const char *delimeter, uint8
                 rsp_len = rsp_len-1;    //
             }
             //RAW mode
-            if(g_if_buffer[rsp_len-1] == '#')
-            {                
-#ifdef RNWF_INTERFACE_DEBUG       
-                printf("RAW Mode!\n");
-#endif /* RNWF_INTERFACE_DEBUG */                                     
-                result = RNWF_RAW;
-                break;
-            }  
+            if(rsp_len == 1)
+            {
+                if(g_if_buffer[rsp_len-1] == '#')
+                {                
+                #ifdef RNWF_INTERFACE_DEBUG       
+                    printf("RAW Mode!\n");
+                #endif /* RNWF_INTERFACE_DEBUG */                                     
+                    result = RNWF_RAW;
+                    break;
+                }
+            }
             
             if((rsp_len > 1) && (g_if_buffer[rsp_len - 1] == '\n') && (g_if_buffer[rsp_len - 2] == '\r'))
             {                

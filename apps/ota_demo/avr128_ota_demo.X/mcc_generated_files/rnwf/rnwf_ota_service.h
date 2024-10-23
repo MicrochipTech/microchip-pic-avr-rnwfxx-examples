@@ -1,19 +1,17 @@
-/*
- * MAIN Generated Driver File
+/**
+ * OTA Service header file
  * 
  * @file rnwf_ota_service.h
  * 
- * @defgroup 
- *
- * @ingroup
+ * @defgroup ota_service OTA Configuration Service 
  * 
- * @brief 
+ * @brief This header file contains data types for OTA service
  *
- * @version Driver Version 1.0.0
+ * @version Driver Version 2.0.0
 */
 
 /*
-? [2023] Microchip Technology Inc. and its subsidiaries.
+© [2024] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -66,7 +64,6 @@ This page is for advanced users.
 
 #define OTA_IMAGE_MAX               2
 
-#ifndef RNWF11_SERVICE      /* RNWF02 */
 /* Maximum supported write size by DFU PE (Programming Executive). */
 #define MAX_PE_WRITE_SIZE           4096U
 
@@ -81,7 +78,6 @@ This page is for advanced users.
 #define PE_ERASE_PAGE_SIZE        4096
 #define PE_MAX_RESPONSE_SIZE         8
 
-#endif
 
 /* Time */
 /* Values may need to be adjusted based on host platform. */
@@ -89,7 +85,6 @@ This page is for advanced users.
 #define MSEC_TO_SEC               1000
 #define WRITE_DELAY_USEC          250
 
-#ifndef RNWF11_SERVICE      /* RNWF02 */
 /* DFU */
 #define RIO0_PE_VERSION 1
 //#define RIO0_CHIP_ID    0x29c71053
@@ -101,47 +96,17 @@ This page is for advanced users.
  */
 #define DFU_PE_WRITE_SIZE   4096
 
-#else    /* RNWF02 */
-
-#define BL_CMD_UNLOCK       0xa0
-#define BL_CMD_DATA         0xa1
-#define BL_CMD_VERIFY       0xa2
-#define BL_CMD_RESET        0xa3
-#define BL_CMD_BKSWAP_RESET 0xa4
-#define BL_CMD_DEVCFG_DATA  0xa5
-#define BL_CMD_READ_VERSION 0xa6
-#define BL_CMD_ENTER_BTL    0xa7
-#define BL_CMD_ERASE_APP    0xa8
-
-#define BL_RESP_OK          0x50
-#define BL_RESP_ERROR       0x51
-#define BL_RESP_INVALID     0x52
-#define BL_RESP_CRC_OK      0x53
-#define BL_RESP_CRC_FAIL    0x54
-#define BL_RESP_NONE        0xFF
-
-#define BL_GUARD            0x5048434D
-
-#define CMD_SIZE                1
-#define GUARD_SIZE              4
-#define SIZE_SIZE               4
-#define ADDR_SIZE               4
-#define CMD_ONLY_EXTRA_SIZE     4
-#define HEADER_SIZE             (GUARD_SIZE + SIZE_SIZE + CMD_SIZE)
-
-#endif
 
 /* Time */
 #define UART_DELAY_MSEC     500
 
-/**
- @defgroup OTA_GRP OTA API
- @{
- */
-
-
 #define OTA_SOCK_ID     gOta_CfgData.socket
 
+/**
+ * @ingroup ota_service
+ * @brief   OTA Configurations Parameters List
+ * @enum    OTA_CFG_PARAM_t
+*/
 typedef enum
 {
     OTA_CFG_PARAM_PORT,
@@ -152,9 +117,10 @@ typedef enum
 }OTA_CFG_PARAM_t;
 
 /**
- @brief OTA modes
-
- */
+ * @ingroup ota_service
+ * @brief   OTA modes
+ * @enum    RNWF_OTA_MODES_t
+*/
 typedef enum
 {
     RNWF_OTA_MODE_HTTP,     /**<FW file is from HTTP server */
@@ -162,11 +128,11 @@ typedef enum
     RNWF_OTA_MODE_UART,     /**<FW file is from Host UART*/
 }RNWF_OTA_MODES_t;
 
-
 /**
- @brief OTA Image types
-
- */
+ * @ingroup ota_service
+ * @brief   OTA image types
+ * @enum    RNWF_OTA_IMAGE_t
+*/
 typedef enum
 {
     RNWF_OTA_LOW_FW,        /**<FW at lower slot */
@@ -175,9 +141,10 @@ typedef enum
 }RNWF_OTA_IMAGE_t;
 
 /**
- @brief OTA Service lists
-
- */
+ * @ingroup ota_service
+ * @brief   OTA Service lists
+ * @enum    RNWF_OTA_SERVICE_t
+*/
 typedef enum
 {
     RNWF_OTA_ENABLE,                /**<Connected to MQTT broker event */
@@ -189,15 +156,13 @@ typedef enum
     RNWF_OTA_DFU_INIT,           /**<OTA Trigger, Actual programming start*/
     RNWF_OTA_DFU_WRITE,             /**<OTA Write, Writes the FW max 4096 bytes*/
     RNWF_OTA_DFU_ERASE,             /**<OTA Erase, Erases the given size*/
-#ifdef RNWF11_SERVICE            
-    RNWF_OTA_DFU_RESET,             /**<OTA Reset, Erases the given size*/
-#endif
 }RNWF_OTA_SERVICE_t;
 
 /**
- @brief OTA Service lists
- 
- */
+ * @ingroup ota_service
+ * @brief   OTA events
+ * @enum    RNWF_OTA_EVENT_t
+*/
 typedef enum
 {
     RNWF_EVENT_MAKE_UART,       /**<Change to UART mode */
@@ -206,41 +171,59 @@ typedef enum
     RNWF_EVENT_DWLD_START,      /**<FW Download complete */
     RNWF_EVENT_DWLD_DONE,       /**<FW Download complete */
     RNWF_EVENT_DWLD_FAIL,       /**<FW Download failed */
-    RNWF_EVENT_CONFIG_INFO,
-     
+    RNWF_EVENT_CONFIG_INFO,  
 }RNWF_OTA_EVENT_t;
 
-
 /**
- @brief OTA GPIO Control Function
-
- */
+ * @ingroup     ota_service
+ * @brief       OTA GPIO Control Function
+ * @param[in]   pin       GPIO pin number
+ * @param[in]   output
+ * @return      None
+*/
 typedef void (*RNWF_OTA_GPIO_CTRL_FUNC_t)(uint32_t pin, uint8_t output);
 
 /**
- @brief OTA UART Tx Function
-
- */
+ * @ingroup     ota_service
+ * @brief       OTA UART Tx Function
+ * @param[in]   buffer       Buffer to Tx
+ * @param[in]   length        Length of the buffer
+ * @return None
+*/
 typedef void (*RNWF_OTA_UART_TX_FUNC_t)(uint8_t *buffer, uint32_t length);
 
 /**
- @brief OTA Flash Write Function
-
- */
+ * @ingroup     ota_service
+ * @brief       OTA Flash write function
+ * @param[in]   buffer       Buffer to write to flash
+ * @param[in]   length        Length of the buffer
+ * @return      None
+*/
 typedef void (*RNWF_OTA_FLASH_WR_FUNC_t)(uint8_t *buffer, uint32_t length);
 
 /**
- @brief OTA Flash Read Function
-
- */
+ * @ingroup     ota_service
+ * @brief       OTA Flash Read Function
+ * @param[in]   buffer       Buffer
+ * @param[in]   length        Length of the data read
+ * @return      None
+*/
 typedef void (*RNWF_OTA_DLASH_RD_FUNC_t)(uint8_t *buffer, uint32_t length);
 
 /**
- @brief MQTT Callback Function definition
-
- */
+ * @ingroup     ota_service
+ * @brief       OTA Callback Function
+ * @param[in]   RNWF_OTA_EVENT_t OTA event type
+ * @param[in]   OTA config parameters needed for service
+ * @return      None
+*/
 typedef void (*RNWF_OTA_CALLBACK_t)(RNWF_OTA_EVENT_t, void *);
 
+/**
+ * @ingroup ota_service
+ * @brief OTA chunk header struct
+ * @struct RNWF_OTA_CHUNK_t
+*/
 typedef struct
 {
     uint32_t chunk_addr; 
@@ -248,7 +231,11 @@ typedef struct
     uint8_t  *chunk_ptr;    
 }RNWF_OTA_CHUNK_t;
 
-
+/**
+ * @ingroup ota_service
+ * @brief OTA Header struct
+ * @struct RNWF_OTA_HDR_t
+*/
 typedef struct
 {
     uint32_t seq_num;
@@ -258,9 +245,10 @@ typedef struct
 }RNWF_OTA_HDR_t;
 
 /**
- @brief Network and Socket service List
-
- */
+ * @ingroup ota_service
+ * @brief   OTA configuration struct
+ * @struct  RNWF_OTA_CFG_t
+*/
 typedef struct
 {
     RNWF_NET_SOCKET_t socket;               /**<Socket handler for HTTP link*/
@@ -272,27 +260,26 @@ typedef struct
 
 
 /**
- @brief MQTT Callback Function handler
-
- */
+ * @ingroup ota_service
+ * @brief   MQTT Callback Function handler
+ * @var     gOta_CallBack_Handler OTA callback handler function
+*/
 extern RNWF_OTA_CALLBACK_t gOta_CallBack_Handler;
-
 
 extern uint32_t g_Ota_SocketId;
 
 extern RNWF_OTA_CFG_t gOta_CfgData;
 
 extern uint32_t otaFileSize;
+
 /**
- * @brief MQTT Service Layer API to handle system operations.
- * 
- *
- * @param[in] request       Requested service ::RNWF_OTA_SERVICE_t
- * @param[in] input         Input/Output data for the requested service 
- * 
- * @return RNWF_PASS Requested service is handled successfully
- * @return RNWF_PASS Requested service has failed
- */
+ * @ingroup     ota_service
+ * @brief       OTA Service Layer API to handle system operations.
+ * @param[in]   request       Requested service of type RNWF_OTA_SERVICE_t
+ * @param[in]   input         Input/Output data for the requested service 
+ * @retval      RNWF_PASS Requested service is handled successfully
+ * @retval      RNWF_FAIL Requested service has failed
+*/
 RNWF_RESULT_t RNWF_OTA_SrvCtrl( RNWF_OTA_SERVICE_t request, void *input);
 
 
@@ -305,26 +292,62 @@ extern "C" {
 // DOM-IGNORE-END
 
 RNWF_RESULT_t DFU_PROGRAM_Task(uint32_t otaBinSize);
-void     DFU_Reset(void);
-#ifndef RNWF11_SERVICE      /* RNWF02 */
 
+/**
+ * @ingroup ota_service
+ * @brief   Send signal to MCLR pin for DFU reset
+ * @param[in] None
+ * @return None
+*/
+void     DFU_Reset(void);
+
+/**
+ * @ingroup     ota_service
+ * @brief       Function to send Programming Executive (PE) test pattern
+ * @param[in]   None
+ * @return      None
+*/
 void     DFU_PE_InjectTestPattern(void);
-/* DFU_PE_Version returns PE version in succesful case, else 0. */
+
+/**
+ * @ingroup     ota_service
+ * @brief       Function to get PE version
+ * @param[in]   None
+ * @retval      peVersion    PE Version when successful
+ * @return      0    when fails
+*/
 uint8_t  DFU_PE_Version(void);
-/* DFU_PE_Chip_ID return device chip ID in successful case, else 0.*/
+
+/**
+ * @ingroup     ota_service
+ * @brief       Function to get chip ID
+ * @param[in]   None
+ * @retval      chipID      Chip ID when successful
+ * @retval      0 when fails
+*/
 uint32_t DFU_PE_Chip_ID(void);
+
+/**
+ * @ingroup     ota_service
+ * @brief       Function to erase provided size of memory
+ * @param[in]   address       memory address from where to erase
+ * @param[in]   length        size of memory to erase
+ * @retval      TRUE DFU erase successful
+ * @retval      FALSE DFU erase failed
+*/
 bool     DFU_PE_Erase(uint32_t address, const uint32_t length);
+
+/**
+ * @ingroup     ota_service
+ * @brief       Function to write PE data to RNWF device
+ * @param[in]   address       memory address
+ * @param[in]   length        size of data to write (max chunk size is 4096 bytes)
+ * @param[in]   PE_writeBuffer OTA chunk pointer
+ * @retval      TRUE Write successful
+ * @retval      FALSE Write failed
+*/
 bool     DFU_PE_Write(uint32_t address, const uint32_t length, uint8_t *PE_writeBuffer);
 
-#else   /* RNWF11_SERVUCE */
-
-uint16_t DFU_UART_Read_Bootloader_Version(void);
-bool DFU_UART_Write(uint32_t address, const uint32_t length, uint8_t *writeBuffer);
-bool DFU_UART_Unlock(uint32_t address, uint32_t size);
-bool DFU_UART_Verify(uint32_t crc);
-bool DFU_UART_Reset(void);
-bool DFU_UART_ERASE_APP(void);
-#endif
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 
